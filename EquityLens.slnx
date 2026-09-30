@@ -1,0 +1,8 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="EquityLens/EquityLens.vcxproj" />
+  <Project Path="EquityLens.Tests/EquityLens.Tests.vcxproj" />
+</Solution>
