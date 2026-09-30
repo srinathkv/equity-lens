@@ -18,6 +18,9 @@
     <ClCompile Include="AlphaVantageClient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LearningDemo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="StockStatistics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -30,6 +33,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlphaVantageClient.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LearningDemo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="StockStatistics.h">

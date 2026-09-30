@@ -1,4 +1,5 @@
 #include "AlphaVantageClient.h"
+#include "LearningDemo.h"
 #include "StockDataStore.h"
 #include "StockStatistics.h"
 
@@ -103,6 +104,7 @@ namespace
 			<< "  EquityLens.exe [SYMBOL ...]   Fetch latest quotes\n"
 			<< "  EquityLens.exe history SYMBOL Fetch and display up to 100 daily observations\n"
 			<< "  EquityLens.exe stats SYMBOL   Summarize saved observations\n"
+			<< "  EquityLens.exe learn          Run the offline modern C++ learning demo\n"
 			<< "  EquityLens.exe                Enter symbols interactively\n";
 	}
 }
@@ -115,6 +117,11 @@ int main(int argc, char* argv[])
 		{
 			printUsage();
 			return 0;
+		}
+
+		if (argc == 2 && std::string_view{ argv[1] } == "learn")
+		{
+			return runLearningDemo();
 		}
 
 		if (argc >= 2 && std::string_view{ argv[1] } == "stats")

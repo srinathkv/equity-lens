@@ -3,6 +3,6 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="EquityLens/EquityLens.vcxproj" />
-  <Project Path="EquityLens.Tests/EquityLens.Tests.vcxproj" />
+  <Project Path="EquityLens/EquityLens.vcxproj" Id="4d15555b-6dcc-44a2-8697-4187c02cdcac" />
+  <Project Path="EquityLens.Tests/EquityLens.Tests.vcxproj" Id="8b15b6ea-bcf4-4d5e-a9fc-2999e2c26aa0" />
 </Solution>

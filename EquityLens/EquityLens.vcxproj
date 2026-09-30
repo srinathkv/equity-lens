@@ -156,12 +156,14 @@
 
   <ItemGroup>
     <ClCompile Include="AlphaVantageClient.cpp" />
+    <ClCompile Include="LearningDemo.cpp" />
     <ClCompile Include="StockDataStore.cpp" />
     <ClCompile Include="StockStatistics.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlphaVantageClient.h" />
+    <ClInclude Include="LearningDemo.h" />
     <ClInclude Include="StockDataStore.h" />
     <ClInclude Include="StockPrice.h" />
     <ClInclude Include="StockStatistics.h" />

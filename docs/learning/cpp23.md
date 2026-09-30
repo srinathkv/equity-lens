@@ -1,6 +1,14 @@
-# C++23: Explicit Results and Multidimensional Views
+# C++23: Explicit Results, Ranges, and Library Growth
 
-The final EquityLens application is compiled as C++23. C++23 adds library types that can improve error contracts and represent views over existing storage.
+The EquityLens application is compiled as C++23. C++23 adds library types that can improve error contracts and represent views over existing storage. Availability varies by compiler and standard-library version, so verify support before relying on a feature in a product build.
+
+## Language features
+
+- Explicit object parameters (often called “deducing this”) make the object parameter explicit and can reduce cv/ref-qualified overload sets or support recursive lambdas.
+- Multidimensional subscripting allows comma-separated indices for a suitable user-defined type.
+- `if consteval` branches based on whether evaluation is manifestly constant-evaluated.
+- `[[assume(expression)]]` communicates an optimizer assumption; violating it can cause undefined behavior, so it is not a runtime validation check.
+- `#elifdef` and `#elifndef` simplify conditional preprocessing. C++23 also adds improvements to `constexpr`, lambdas, and static call operators.
 
 ## `std::expected`
 
@@ -33,6 +41,32 @@ candles(dayIndex, closeColumn) = close;
 
 This needs `<mdspan>`, `<cstddef>`, and `<vector>`. A normalized SQLite table is a better fit for the current application; use `mdspan` only when an analysis genuinely benefits from a dense matrix. Check the selected MSVC standard-library version for implementation support.
 
-## Version note and exercise
+## Standard library highlights
 
-`std::jthread` was introduced in C++20, even though it is useful in a C++23 application. Create an `expected`-returning parser beside the existing exception-based parser in a lesson branch, test both, and compare how the caller handles an invalid API field.
+- Ranges add adaptors such as `views::zip`, `views::chunk`, `views::slide`, `views::stride`, `views::enumerate`, and `views::cartesian_product`, plus `ranges::to` to materialize results.
+- `std::print`/`std::println` provide formatted output; `std::flat_map`/`std::flat_set` offer contiguous-storage-oriented ordered containers.
+- `std::move_only_function` type-erases callables that may own move-only state. `std::generator` provides coroutine-based sequences.
+- `std::stacktrace`, `std::to_underlying`, `std::byteswap`, `std::unreachable`, and `std::invoke_r` add useful utilities.
+- `std::optional` gains monadic operations; `std::string_view` gains `contains`; `std::basic_string` gains `resize_and_overwrite`.
+- Extended floating-point, ranges, and other library facilities may be implemented at different times by each toolchain.
+
+## EquityLens connection
+
+`expected` could model parser errors explicitly beside the app's exception-based boundaries. `mdspan` can view dense indicator storage without owning it, but does not replace normalized SQLite storage. Use range adaptors only when their pipeline is clearer than a loop.
+
+## Version note and practice
+
+`std::jthread` was introduced in C++20, even though it is useful in a C++23 application.
+
+1. Implement an `expected`-returning close parser; test valid, empty, invalid, and trailing-character inputs.
+2. Try `views::enumerate` or `views::zip` when supported and provide an equivalent loop.
+3. Build an `mdspan` over synthetic OHLC values and document its owner and storage layout.
+4. Compare exceptions and `expected` for invalid provider data and state which errors are routine input failures.
+5. Check the library feature-test macro before using a C++23 library facility.
+
+## Common pitfalls
+
+- Assuming a standardized feature is implemented in the selected compiler and standard library.
+- Returning an `mdspan` or range view after its backing storage has been destroyed.
+- Using `[[assume]]` instead of a runtime check.
+- Replacing every exception with `expected` without considering the API's error contract.
