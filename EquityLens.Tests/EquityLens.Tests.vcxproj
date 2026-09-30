@@ -63,7 +63,7 @@
 	  <WarningLevel>Level3</WarningLevel>
 	  <SDLCheck>true</SDLCheck>
 	  <ConformanceMode>true</ConformanceMode>
-	  <LanguageStandard>stdcpp23</LanguageStandard>
+		<LanguageStandard>stdcpplatest</LanguageStandard>
 	  <AdditionalIncludeDirectories>$(ProjectDir)..\EquityLens;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
 	</ClCompile>
 	<Link>
@@ -79,6 +79,7 @@
 	<ClCompile Include="..\EquityLens\StockStatistics.cpp" />
   </ItemGroup>
   <ItemGroup>
+		<ClInclude Include="..\EquityLens\AlphaVantageParsing.h" />
 	<ClInclude Include="..\EquityLens\StockDataStore.h" />
 	<ClInclude Include="..\EquityLens\StockIndicators.h" />
 	<ClInclude Include="..\EquityLens\StockPresentation.h" />

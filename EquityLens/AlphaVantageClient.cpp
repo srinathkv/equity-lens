@@ -3,6 +3,7 @@
 #include <Winhttp.h>
 
 #include "AlphaVantageClient.h"
+#include "AlphaVantageParsing.h"
 
 #include <nlohmann/json.hpp>
 
@@ -163,18 +164,6 @@ namespace
 			throw std::runtime_error(std::string("Invalid Alpha Vantage numeric field: ") + field);
 		}
 		return value;
-	}
-
-	std::int64_t parseVolume(const Json& quote)
-	{
-		const std::string text = getQuoteField(quote, "06. volume");
-		std::int64_t volume = 0;
-		const auto [end, error] = std::from_chars(text.data(), text.data() + text.size(), volume);
-		if (error != std::errc{} || end != text.data() + text.size())
-		{
-			throw std::runtime_error("Invalid Alpha Vantage volume field");
-		}
-		return volume;
 	}
 
 	std::chrono::sys_time<std::chrono::milliseconds> parseTradingDate(std::string_view day);
@@ -378,7 +367,7 @@ StockPrice AlphaVantageClient::fetchGlobalQuote(std::string_view symbol) const
 		parseDouble(quote, "03. high"),
 		parseDouble(quote, "04. low"),
 		parseDouble(quote, "05. price"),
-		parseVolume(quote)
+		AlphaVantageParsing::parseGlobalQuoteVolume(quote)
 	};
 }
 
@@ -410,7 +399,7 @@ std::vector<StockPrice> AlphaVantageClient::fetchDailyHistory(std::string_view s
 			parseDouble(quote, "2. high"),
 			parseDouble(quote, "3. low"),
 			parseDouble(quote, "4. close"),
-			parseVolume(quote)
+			AlphaVantageParsing::parseDailyVolume(quote)
 		});
 	}
 	std::sort(history.begin(), history.end(), [](const StockPrice& left, const StockPrice& right)

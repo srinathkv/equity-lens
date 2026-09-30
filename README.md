@@ -1,6 +1,6 @@
 # EquityLens
 
-EquityLens is a C++23 console stock analyzer and a progressive C++ learning project. It fetches Alpha Vantage quotes and daily history, stores OHLCV observations in SQLite, calculates summary statistics and technical indicators, renders ASCII candlestick charts, and exports saved history to CSV.
+EquityLens is a console stock analyzer built in MSVC's latest C++ working-draft mode, alongside a progressive C++ learning project.
 
 ## Build
 
@@ -27,7 +27,7 @@ Requests are spaced by at least 1.1 seconds to comply with Alpha Vantage's per-s
 
 ## Learn C++ progressively
 
-The final application remains C++23. The [learning path](docs/learning/README.md) provides separate lessons, explanations, and exercises for:
+The application and test project target C++26 through MSVC's latest working-draft mode (`/std:c++latest`). Individual C++26 features remain dependent on compiler and standard-library support. The [learning path](docs/learning/README.md) provides separate lessons, explanations, and exercises for:
 
 1. C++11 — RAII, smart pointers, and lambdas.
 2. C++14 — `std::make_unique` and generic lambdas.

@@ -2,6 +2,7 @@
 #include "StockIndicators.h"
 #include "StockPresentation.h"
 #include "StockStatistics.h"
+#include "AlphaVantageParsing.h"
 
 #include <chrono>
 #include <cmath>
@@ -296,6 +297,25 @@ namespace
 		requireThrows<std::invalid_argument>([&] { static_cast<void>(store.getPrices("AAPL", date(2), date(1))); },
 			"reversed date ranges should be rejected");
 	}
+
+	void alphaVantageVolumeParsingMatchesEndpointSchemas()
+	{
+		const nlohmann::json globalQuote = {
+			{ "06. volume", "123456" }
+		};
+		const nlohmann::json dailyObservation = {
+			{ "1. open", "100.00" },
+			{ "2. high", "110.00" },
+			{ "3. low", "95.00" },
+			{ "4. close", "105.00" },
+			{ "5. volume", "654321" }
+		};
+
+		require(AlphaVantageParsing::parseGlobalQuoteVolume(globalQuote) == 123456,
+			"global quote should read its 06. volume field");
+		require(AlphaVantageParsing::parseDailyVolume(dailyObservation) == 654321,
+			"daily history should read its 5. volume field");
+	}
 }
 
 int main()
@@ -310,5 +330,6 @@ int main()
 	runTest("presentation exports escaped CSV", presentationExportsEscapedCsv);
 	runTest("SQLite persistence, ranges, and upserts", sqliteStorePersistsQueriesAndUpsertsPrices);
 	runTest("SQLite rejects invalid prices and ranges", sqliteStoreRejectsInvalidPricesAndRanges);
+	runTest("Alpha Vantage endpoint volume schemas", alphaVantageVolumeParsingMatchesEndpointSchemas);
 	return failures == 0 ? 0 : 1;
 }

@@ -16,15 +16,24 @@ Contracts express preconditions, postconditions, and assertions associated with 
 
 Other language work includes pack indexing, structured-binding packs, and expanded `constexpr` support. Exact syntax and implementation status are still evolving; consult a current feature-status reference for the compiler release. Do not assume every proposal discussed online was adopted.
 
-## Standard library directions and additions
+## Standard library facilities
 
 ### `std::execution`
 
 The sender/receiver execution model provides composable asynchronous operations, scheduling, and completion channels. It is designed to make execution and error completion explicit. It is not a standard HTTP client, and a platform-specific WinHTTP request still needs a compatible asynchronous integration layer.
 
-### Other library additions
+### `std::inplace_vector`
 
-C++26 includes new container facilities such as `std::inplace_vector` (fixed-capacity storage within the object) and `std::hive` (an unordered sequence container designed for stable element addresses in common operations). Text encoding identification and other library facilities also continue to grow. Check the current standard and library implementation for the exact feature set. Use feature-test macros documented for each facility; checking a compiler version alone is not sufficient.
+`std::inplace_vector<T, N>` is a sequence container with vector-like operations, a runtime size, and a fixed maximum capacity `N`; its element storage is part of the container object. It is useful when the bound is known and allocation avoidance or a visible capacity limit matters. It is not a drop-in replacement for `std::vector`: capacity cannot grow, and the containing object is larger as `N` grows.
+
+```cpp
+#include <inplace_vector>
+
+std::inplace_vector<double, 100> recentCloses;
+recentCloses.push_back(193.50);
+```
+
+The `learn` command demonstrates this container when the standard library advertises `__cpp_lib_inplace_vector >= 202406L`; otherwise it reports the unavailable library feature and continues. A C++26/latest language-mode setting does not itself guarantee library support. `std::hive` and text-encoding facilities are additional C++26 library work; check the exact support status of the selected toolchain before using them.
 
 ## EquityLens connection
 
@@ -38,8 +47,8 @@ Reflection could eventually help generate repetitive reporting or serialization 
 2. Inspect the standard-library feature-test macros available in the selected toolchain.
 3. Sketch an EquityLens quote-fetch pipeline with separate request, parse, and store completion/error cases. Identify where rate limiting and cancellation belong.
 4. Compare an explicit `StockPrice` formatter with a hypothetical reflection-based formatter; list the simplicity and support tradeoffs.
-5. Compile a small test under the compiler's C++26 mode only when the specific feature is documented as supported.
-6. Compare `std::inplace_vector` with `std::vector` for a bounded batch of price observations; discuss capacity failure and object size.
+5. Compile a small test under the compiler's C++26/latest mode only when the specific feature is documented as supported.
+6. Compare `std::inplace_vector` with `std::vector` for a bounded batch of price observations; discuss capacity failure and object size. Check the standard-library feature-test macro rather than relying on compiler-version checks.
 
 ## Common pitfalls
 

@@ -43,11 +43,11 @@ Each week combines the linked language lesson with one small, tested EquityLens 
 4. Run `EquityLens.exe learn` for a short offline demonstration; it does not call the provider or modify the database. Use features in production only when they improve the interface or correctness.
 5. Use compiler diagnostics and tests to verify examples on your own toolchain.
 
-Run `EquityLens.exe learn` for a short, offline demonstration of modern features used appropriately in a sample stock-data flow. It does not call the provider or modify the database. The demo covers representative C++11–23 concepts; use the lessons for broader coverage and C++26 support guidance.
+Run `EquityLens.exe learn` for an offline field guide through representative C++11, C++14, C++17, C++20, C++23, and C++26 facilities in a sample stock-data flow. It demonstrates ownership and moves, generic lambdas, vocabulary types, concepts and views, expected errors and range folding, and conditionally `std::inplace_vector` when the standard library advertises support. It does not call the provider or modify the database; see each linked lesson for detailed explanations, tradeoffs, and exercises.
 
 ## Compiler and standard-library support
 
-The application is built as C++23 with MSVC. A language mode switch does not guarantee that every library feature is implemented. Support can differ between the compiler front end and its standard library, and C++26 support is especially in progress. Check the compiler vendor's feature-status documentation and library feature-test macros before adopting a facility. Label C++26 proposals and evolving facilities as such rather than assuming draft syntax is final.
+The application and test project use MSVC's latest C++ working-draft mode (`/std:c++latest`) to target C++26. A language mode switch does not guarantee that every library feature is implemented. Support can differ between the compiler front end and its standard library. Check the compiler vendor's feature-status documentation and library feature-test macros before adopting a facility; treat draft or evolving facilities accordingly.
 
 ## Learning principles
 

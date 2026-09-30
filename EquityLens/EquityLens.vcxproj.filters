@@ -59,5 +59,8 @@
     <ClInclude Include="StockPrice.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AlphaVantageParsing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
