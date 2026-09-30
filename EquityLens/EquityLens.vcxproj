@@ -158,6 +158,8 @@
     <ClCompile Include="AlphaVantageClient.cpp" />
     <ClCompile Include="LearningDemo.cpp" />
     <ClCompile Include="StockDataStore.cpp" />
+    <ClCompile Include="StockIndicators.cpp" />
+    <ClCompile Include="StockPresentation.cpp" />
     <ClCompile Include="StockStatistics.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -165,6 +167,8 @@
     <ClInclude Include="AlphaVantageClient.h" />
     <ClInclude Include="LearningDemo.h" />
     <ClInclude Include="StockDataStore.h" />
+    <ClInclude Include="StockIndicators.h" />
+    <ClInclude Include="StockPresentation.h" />
     <ClInclude Include="StockPrice.h" />
     <ClInclude Include="StockStatistics.h" />
   </ItemGroup>

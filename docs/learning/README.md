@@ -11,6 +11,17 @@ This curriculum is a comprehensive, example-driven tour of major C++ language an
 5. [C++23: Library expansion](cpp23.md) — `expected`, `mdspan`, modern ranges, formatting, and newer language syntax.
 6. [C++26: The next standard](cpp26.md) — evolving language and library facilities, execution, reflection/contracts directions, and support status.
 
+## Six-week syllabus
+
+Each week combines the linked language lesson with one small, tested EquityLens exercise. Keep experiments isolated from production unless a feature improves correctness or the design.
+
+1. **C++11 foundations — ownership and API lifetimes.** Trace RAII for WinHTTP and SQLite resources; practice move semantics, typed lambdas, and safe response ownership. Deliverable: a small resource-lifetime exercise with tests.
+2. **C++14 and C++17 — generic code and data representation.** Compare generic and typed lambdas, use `make_unique`, and practice `optional`, `variant`, structured bindings, and filesystem. Deliverable: parsing and persistence exercises for missing or invalid quote data.
+3. **C++20 — constrained analysis pipelines.** Use concepts and ranges for numerical operations. Exercise the production SMA(14), Wilder RSI(14), and 20-day Bollinger Bands (two population standard deviations) with `EquityLens.exe indicators SYMBOL`; compare a ranges pipeline with a simple loop. Results align with dates and use empty warm-up values.
+4. **C++23 — explicit errors and data views.** Prototype an `expected`-returning parser and use `mdspan` over owned, dense OHLC data. Keep SQLite as the persistence source of truth and document the view's backing-storage lifetime.
+5. **Resilience and presentation — safe application behavior.** `history SYMBOL` loads saved data; then `chart SYMBOL` renders ASCII candles and `export SYMBOL FILE.csv` writes OHLCV data. Provider requests retain 1.1-second pacing and retry selected transient failures at most twice; quota errors are not retried. Explore bounded background work separately, without bypassing provider pacing. Treat coroutine-based networking as a separate design task: coroutines alone do not make synchronous I/O asynchronous.
+6. **C++26 — support-aware exploration.** Check compiler and standard-library feature status before trying new facilities. Keep reflection, contracts, pattern matching, and other evolving ideas labeled as experimental or hypothetical until their standardization and implementation status is verified; document fallbacks and tests.
+
 ## Feature map
 
 | Area | Start here | Continue here |

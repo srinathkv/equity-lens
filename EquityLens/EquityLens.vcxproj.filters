@@ -27,6 +27,12 @@
     <ClCompile Include="StockDataStore.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="StockIndicators.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StockPresentation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -42,6 +48,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="StockDataStore.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StockIndicators.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StockPresentation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="StockPrice.h">

@@ -1,15 +1,19 @@
 #include "AlphaVantageClient.h"
 #include "LearningDemo.h"
 #include "StockDataStore.h"
+#include "StockIndicators.h"
+#include "StockPresentation.h"
 #include "StockStatistics.h"
 
 #include <chrono>
 #include <cstddef>
 #include <cstdlib>
 #include <exception>
+#include <filesystem>
 #include <iomanip>
 #include <iostream>
 #include <memory>
+#include <optional>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -91,6 +95,56 @@ namespace
 			<< "Average volume: " << statistics.averageVolume << '\n';
 	}
 
+	void printIndicatorCell(std::optional<double> value)
+	{
+		if (value)
+		{
+			std::cout << std::setw(10) << *value;
+		}
+		else
+		{
+			std::cout << std::setw(10) << "-";
+		}
+	}
+
+	void printTechnicalIndicators(const std::vector<StockPrice>& prices)
+	{
+		if (prices.empty())
+		{
+			throw std::runtime_error("No saved quote history is available for this symbol");
+		}
+
+		const auto movingAverage = calculateSimpleMovingAverage(prices, 14);
+		const auto relativeStrength = calculateRelativeStrengthIndex(prices);
+		const auto bands = calculateBollingerBands(prices);
+		const std::size_t firstIndex = prices.size() > 60 ? prices.size() - 60 : 0;
+
+		std::cout << "Technical indicators for " << prices.front().symbol
+			<< " (latest " << prices.size() - firstIndex << " observations)\n"
+			<< "Date       Close      SMA14      RSI14   BB lower  BB middle   BB upper\n"
+			<< std::fixed << std::setprecision(2);
+		for (std::size_t index = firstIndex; index < prices.size(); ++index)
+		{
+			std::cout << formatDate(prices[index].timestamp) << ' '
+				<< std::setw(10) << prices[index].close;
+			printIndicatorCell(movingAverage[index]);
+			printIndicatorCell(relativeStrength[index]);
+			if (bands[index])
+			{
+				printIndicatorCell(bands[index]->lower);
+				printIndicatorCell(bands[index]->middle);
+				printIndicatorCell(bands[index]->upper);
+			}
+			else
+			{
+				printIndicatorCell(std::nullopt);
+				printIndicatorCell(std::nullopt);
+				printIndicatorCell(std::nullopt);
+			}
+			std::cout << '\n';
+		}
+	}
+
 	std::vector<StockPrice> getAllSavedPrices(const StockDataStore& store, std::string_view symbol)
 	{
 		return store.getPrices(uppercaseSymbol(symbol),
@@ -104,6 +158,9 @@ namespace
 			<< "  EquityLens.exe [SYMBOL ...]   Fetch latest quotes\n"
 			<< "  EquityLens.exe history SYMBOL Fetch and display up to 100 daily observations\n"
 			<< "  EquityLens.exe stats SYMBOL   Summarize saved observations\n"
+			<< "  EquityLens.exe indicators SYMBOL Show SMA14, Wilder RSI14, and 20-day Bollinger bands\n"
+			<< "  EquityLens.exe chart SYMBOL   Render the latest 60 saved observations as ASCII candles\n"
+			<< "  EquityLens.exe export SYMBOL FILE.csv Export saved OHLCV history to CSV\n"
 			<< "  EquityLens.exe learn          Run the offline modern C++ learning demo\n"
 			<< "  EquityLens.exe                Enter symbols interactively\n";
 	}
@@ -135,6 +192,56 @@ int main(int argc, char* argv[])
 			return 0;
 		}
 
+		if (argc >= 2 && std::string_view{ argv[1] } == "indicators")
+		{
+			if (argc != 3)
+			{
+				throw std::invalid_argument("Usage: EquityLens.exe indicators SYMBOL");
+			}
+			StockDataStore store{ "stock_market.db" };
+			printTechnicalIndicators(getAllSavedPrices(store, argv[2]));
+			return 0;
+		}
+
+		if (argc >= 2 && std::string_view{ argv[1] } == "chart")
+		{
+			if (argc != 3)
+			{
+				throw std::invalid_argument("Usage: EquityLens.exe chart SYMBOL");
+			}
+			StockDataStore store{ "stock_market.db" };
+			std::vector<StockPrice> prices = getAllSavedPrices(store, argv[2]);
+			constexpr std::size_t chartObservationLimit = 60;
+			if (prices.size() > chartObservationLimit)
+			{
+				prices.erase(prices.begin(), prices.end() - chartObservationLimit);
+			}
+			std::cout << renderCandlestickChart(prices);
+			return 0;
+		}
+
+		if (argc >= 2 && std::string_view{ argv[1] } == "export")
+		{
+			if (argc != 4)
+			{
+				throw std::invalid_argument("Usage: EquityLens.exe export SYMBOL FILE.csv");
+			}
+			StockDataStore store{ "stock_market.db" };
+			const std::vector<StockPrice> prices = getAllSavedPrices(store, argv[2]);
+			const std::filesystem::path outputPath{ argv[3] };
+			const std::filesystem::path databasePath = std::filesystem::absolute("stock_market.db").lexically_normal();
+			const std::filesystem::path absoluteOutputPath = std::filesystem::absolute(outputPath).lexically_normal();
+			if (absoluteOutputPath == databasePath ||
+				(std::filesystem::exists(absoluteOutputPath) && std::filesystem::equivalent(absoluteOutputPath, databasePath)))
+			{
+				throw std::invalid_argument("CSV output path must not overwrite the SQLite database");
+			}
+			exportPriceHistoryCsv(prices, outputPath);
+			std::cout << "Exported " << prices.size() << " observations for " << uppercaseSymbol(argv[2])
+				<< " to " << argv[3] << '\n';
+			return 0;
+		}
+
 		if (argc >= 2 && std::string_view{ argv[1] } == "history")
 		{
 			if (argc != 3)
@@ -147,6 +254,10 @@ int main(int argc, char* argv[])
 			for (const StockPrice& price : providerHistory)
 			{
 				store.upsertPrice(price);
+			}
+			if (providerHistory.empty())
+			{
+				throw std::runtime_error("Alpha Vantage returned no daily observations");
 			}
 			printHistory(getAllSavedPrices(store, providerHistory.front().symbol));
 			return 0;

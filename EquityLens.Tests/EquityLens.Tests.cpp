@@ -1,11 +1,15 @@
 #include "StockDataStore.h"
+#include "StockIndicators.h"
+#include "StockPresentation.h"
 #include "StockStatistics.h"
 
 #include <chrono>
 #include <cmath>
 #include <cstdint>
 #include <filesystem>
+#include <fstream>
 #include <iostream>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <system_error>
@@ -149,6 +153,106 @@ namespace
 			}, "invalid OHLC values should be rejected");
 	}
 
+	void indicatorsCalculateMovingAveragesAndRequireValidPeriods()
+	{
+		const std::vector<StockPrice> prices{
+			makePrice("AAPL", 1, 100, 102, 99, 100, 1000),
+			makePrice("AAPL", 2, 101, 103, 100, 102, 1100),
+			makePrice("AAPL", 3, 103, 105, 102, 104, 1200),
+			makePrice("AAPL", 4, 105, 107, 104, 106, 1300)
+		};
+		const auto average = calculateSimpleMovingAverage(prices, 3);
+		require(average.size() == prices.size(), "moving average should align with observations");
+		require(!average[0] && !average[1], "moving average should leave warm-up observations empty");
+		requireNear(*average[2], 102, "first moving average should use the first full window");
+		requireNear(*average[3], 104, "moving average should slide by one observation");
+		requireThrows<std::invalid_argument>([&] { static_cast<void>(calculateSimpleMovingAverage(prices, 0)); },
+			"zero moving-average period should be rejected");
+	}
+
+	void indicatorsCalculateWilderRelativeStrengthIndex()
+	{
+		std::vector<StockPrice> prices;
+		for (unsigned day = 1; day <= 16; ++day)
+		{
+			const double close = day <= 15 ? 99.0 + day : 113.0;
+			prices.push_back(makePrice("AAPL", day, close, close + 1, close - 1, close, 1000));
+		}
+
+		const auto rsi = calculateRelativeStrengthIndex(prices);
+		require(!rsi[13], "RSI should remain empty until a full period of price changes exists");
+		requireNear(*rsi[14], 100, "an initial period of gains should produce RSI 100");
+		requireNear(*rsi[15], 92.85714285714286, "RSI should apply Wilder smoothing to the next loss");
+
+		std::vector<StockPrice> flatPrices;
+		for (unsigned day = 1; day <= 4; ++day)
+		{
+			flatPrices.push_back(makePrice("MSFT", day, 100, 101, 99, 100, 1000));
+		}
+		requireNear(*calculateRelativeStrengthIndex(flatPrices, 3)[3], 50,
+			"a flat price series should produce a neutral RSI");
+	}
+
+	void indicatorsCalculatePopulationBollingerBands()
+	{
+		const std::vector<StockPrice> prices{
+			makePrice("AAPL", 1, 100, 102, 99, 100, 1000),
+			makePrice("AAPL", 2, 101, 103, 100, 101, 1100),
+			makePrice("AAPL", 3, 102, 104, 101, 102, 1200),
+			makePrice("AAPL", 4, 103, 105, 102, 103, 1300)
+		};
+		const auto bands = calculateBollingerBands(prices, 3);
+		require(!bands[0] && !bands[1], "Bollinger bands should leave warm-up observations empty");
+		const double deviation = std::sqrt(2.0 / 3.0);
+		requireNear(bands[2]->middle, 101, "Bollinger middle band should be the window mean");
+		requireNear(bands[2]->lower, 101 - 2 * deviation, "lower band should use two population deviations");
+		requireNear(bands[2]->upper, 101 + 2 * deviation, "upper band should use two population deviations");
+		requireThrows<std::invalid_argument>([&] { static_cast<void>(calculateBollingerBands(prices, 3, -1)); },
+			"negative Bollinger deviation multiplier should be rejected");
+	}
+
+	void presentationRendersAsciiCandlesticks()
+	{
+		const std::vector<StockPrice> prices{
+			makePrice("AAPL", 1, 100, 110, 90, 105, 1000),
+			makePrice("AAPL", 2, 105, 112, 100, 101, 1100),
+			makePrice("AAPL", 3, 100, 110, 95, 100, 1200)
+		};
+		const std::string chart = renderCandlestickChart(prices, 8);
+		require(chart.find("Candlestick chart for AAPL") != std::string::npos,
+			"chart should identify its symbol");
+		require(chart.find('#') != std::string::npos && chart.find('o') != std::string::npos &&
+			chart.find('=') != std::string::npos && chart.find('|') != std::string::npos,
+			"chart should render bullish, bearish, unchanged, and wick glyphs");
+		require(chart.find("2024-01-01 to 2024-01-03") != std::string::npos,
+			"chart should identify its chronological date range");
+		requireThrows<std::invalid_argument>([&] { static_cast<void>(renderCandlestickChart(prices, 1)); },
+			"chart height below two rows should be rejected");
+	}
+
+	void presentationExportsEscapedCsv()
+	{
+		const std::vector<StockPrice> prices{
+			makePrice("ACME,\"A\"", 1, 100, 110, 90, 105, 1000),
+			makePrice("ACME,\"A\"", 2, 105, 112, 100, 101, 1100)
+		};
+		std::ostringstream output;
+		writePriceHistoryCsv(prices, output);
+		require(output.str().find("symbol,date,open,high,low,close,volume") == 0,
+			"CSV should begin with the OHLCV header");
+		require(output.str().find("\"ACME,\"\"A\"\"\",2024-01-01") != std::string::npos,
+			"CSV should quote and escape a symbol field");
+
+		TemporaryDatabase outputFile;
+		exportPriceHistoryCsv(prices, outputFile.path());
+		std::ifstream input(outputFile.path(), std::ios::binary);
+		std::string header;
+		std::getline(input, header);
+		require(header == "symbol,date,open,high,low,close,volume",
+			"CSV export should write a readable file");
+		require(static_cast<bool>(input), "CSV output file should open successfully");
+	}
+
 	void sqliteStorePersistsQueriesAndUpsertsPrices()
 	{
 		TemporaryDatabase database;
@@ -199,6 +303,11 @@ int main()
 	runTest("statistics aggregate chronologically", statisticsUseChronologicalEndpointsAndAggregateValues);
 	runTest("statistics support one observation", statisticsHandleSingleObservation);
 	runTest("statistics reject invalid input", statisticsRejectInvalidInputs);
+	runTest("indicators calculate moving averages", indicatorsCalculateMovingAveragesAndRequireValidPeriods);
+	runTest("indicators calculate Wilder RSI", indicatorsCalculateWilderRelativeStrengthIndex);
+	runTest("indicators calculate Bollinger bands", indicatorsCalculatePopulationBollingerBands);
+	runTest("presentation renders ASCII candlesticks", presentationRendersAsciiCandlesticks);
+	runTest("presentation exports escaped CSV", presentationExportsEscapedCsv);
 	runTest("SQLite persistence, ranges, and upserts", sqliteStorePersistsQueriesAndUpsertsPrices);
 	runTest("SQLite rejects invalid prices and ranges", sqliteStoreRejectsInvalidPricesAndRanges);
 	return failures == 0 ? 0 : 1;

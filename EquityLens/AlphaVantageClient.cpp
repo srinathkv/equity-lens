@@ -24,6 +24,34 @@ namespace
 	using Json = nlohmann::json;
 	using WinHttpHandle = std::unique_ptr<void, decltype(&WinHttpCloseHandle)>;
 
+	class RetryableHttpStatus final : public std::runtime_error
+	{
+	public:
+		using std::runtime_error::runtime_error;
+	};
+
+	constexpr unsigned maximumRequestAttempts = 3;
+
+	bool isRetryableWinHttpError(int errorCode)
+	{
+		switch (errorCode)
+		{
+		case ERROR_WINHTTP_TIMEOUT:
+		case ERROR_WINHTTP_NAME_NOT_RESOLVED:
+		case ERROR_WINHTTP_CANNOT_CONNECT:
+		case ERROR_WINHTTP_CONNECTION_ERROR:
+		case ERROR_WINHTTP_RESEND_REQUEST:
+			return true;
+		default:
+			return false;
+		}
+	}
+
+	std::chrono::milliseconds retryDelay(unsigned failedAttempt)
+	{
+		return std::chrono::milliseconds{ 500 } * (1u << (failedAttempt - 1));
+	}
+
 	constexpr bool isAsciiAlphaNumeric(unsigned char character)
 	{
 		return (character >= 'A' && character <= 'Z') ||
@@ -220,7 +248,7 @@ namespace
 		}
 	}
 
-	Json fetchApiResponse(std::string_view apiKey, std::string_view query)
+	Json fetchApiResponseOnce(std::string_view apiKey, std::string_view query)
 	{
 		const std::string path = "/query?" + std::string(query) + "&apikey=" + urlEncode(apiKey);
 		const std::wstring widePath = widenAscii(path);
@@ -261,6 +289,14 @@ namespace
 		{
 			throwWinHttpError("Unable to read Alpha Vantage HTTP status");
 		}
+		if (statusCode == 408 || statusCode == 500 || statusCode == 502 || statusCode == 503 || statusCode == 504)
+		{
+			throw RetryableHttpStatus("Alpha Vantage returned temporary HTTP status " + std::to_string(statusCode));
+		}
+		if (statusCode == 429)
+		{
+			throw std::runtime_error("Alpha Vantage rate limit reached (HTTP status 429); retry the request later");
+		}
 		if (statusCode != 200)
 		{
 			throw std::runtime_error("Alpha Vantage returned HTTP status " + std::to_string(statusCode));
@@ -275,6 +311,40 @@ namespace
 			}
 		}
 		return response;
+	}
+
+	Json fetchApiResponse(std::string_view apiKey, std::string_view query)
+	{
+		for (unsigned attempt = 1; attempt <= maximumRequestAttempts; ++attempt)
+		{
+			try
+			{
+				return fetchApiResponseOnce(apiKey, query);
+			}
+			catch (const RetryableHttpStatus& error)
+			{
+				if (attempt == maximumRequestAttempts)
+				{
+					throw std::runtime_error(std::string(error.what()) + "; retry limit reached after " +
+						std::to_string(maximumRequestAttempts) + " attempts");
+				}
+				std::this_thread::sleep_for(retryDelay(attempt));
+			}
+			catch (const std::system_error& error)
+			{
+				if (!isRetryableWinHttpError(error.code().value()))
+				{
+					throw;
+				}
+				if (attempt == maximumRequestAttempts)
+				{
+					throw std::system_error(error.code(), std::string(error.what()) +
+						"; retry limit reached after " + std::to_string(maximumRequestAttempts) + " attempts");
+				}
+				std::this_thread::sleep_for(retryDelay(attempt));
+			}
+		}
+		throw std::logic_error("Alpha Vantage retry loop exited unexpectedly");
 	}
 }
 

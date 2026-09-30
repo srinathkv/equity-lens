@@ -74,10 +74,14 @@
   <ItemGroup>
 	<ClCompile Include="EquityLens.Tests.cpp" />
 	<ClCompile Include="..\EquityLens\StockDataStore.cpp" />
+	<ClCompile Include="..\EquityLens\StockIndicators.cpp" />
+	<ClCompile Include="..\EquityLens\StockPresentation.cpp" />
 	<ClCompile Include="..\EquityLens\StockStatistics.cpp" />
   </ItemGroup>
   <ItemGroup>
 	<ClInclude Include="..\EquityLens\StockDataStore.h" />
+	<ClInclude Include="..\EquityLens\StockIndicators.h" />
+	<ClInclude Include="..\EquityLens\StockPresentation.h" />
 	<ClInclude Include="..\EquityLens\StockPrice.h" />
 	<ClInclude Include="..\EquityLens\StockStatistics.h" />
   </ItemGroup>

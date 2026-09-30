@@ -53,7 +53,7 @@ Coroutines provide language machinery for suspendable functions. They require an
 
 ## EquityLens connection
 
-A ranges view can describe daily gains without an intermediate container, though a simple loop may be easier to debug. `jthread` can manage a bounded background operation, but it must not bypass the API client's pacing. Coroutines alone do not make synchronous WinHTTP asynchronous.
+EquityLens provides simple moving average, Wilder RSI, and Bollinger-band calculations over chronologically ordered `StockPrice` records. The CLI displays SMA(14), RSI(14), and 20-day bands at two population standard deviations; each function aligns its optional results to input observations and leaves warm-up entries empty. A ranges view can describe daily gains without an intermediate container, though a simple loop may be easier to debug. `jthread` can manage a bounded background operation, but it must not bypass the API client's pacing. Coroutines alone do not make synchronous WinHTTP asynchronous.
 
 ## Practice
 
