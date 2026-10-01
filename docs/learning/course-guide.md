@@ -49,6 +49,8 @@ A feature list by itself is not a lesson. State why a feature is useful, its lim
 
 Every lab is independent of provider credentials, network access, SQLite, and production application state. The lesson or project page states the prerequisites, objectives, task, build command, expected check summary, and extension. Compact labs use a learner file such as `getting-started-starter.cpp`, a reference implementation such as `getting-started.cpp`, the shared `LabChecks.h`, and `run-lab.ps1`. Larger projects may split those pieces into a lab directory with its own `README.md`.
 
+Advanced and build-system-dependent topics may use a separate staged lab index. Keep module builds separate from single-translation-unit runner commands, distinguish synchronous coroutine generators from asynchronous execution, and make feature-dependent skips explicit rather than treating unsupported facilities as passing implementations.
+
 Checks must remain active in both Debug and Release configurations; do not rely on `assert` when `NDEBUG` could disable it. Every public behavior gets a normal case and an applicable boundary/error case. State required standard-library feature macros for support-sensitive work. A failed check should identify the case and expected versus actual result without requiring a debugger. The PowerShell runner compiles with an explicit MSVC standard mode, writes executables to the temporary directory, and propagates compile/check failure through its exit code.
 
 ## Mastery rubric
