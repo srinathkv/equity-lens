@@ -161,6 +161,14 @@
     <ClInclude Include="AlphaVantageClient.h" />
     <ClInclude Include="AlphaVantageParsing.h" />
     <ClInclude Include="LearningDemo.h" />
+    <ClInclude Include="LearningDemoChapters.h" />
+    <ClInclude Include="LearningDemoCxx11.h" />
+    <ClInclude Include="LearningDemoCxx14.h" />
+    <ClInclude Include="LearningDemoCxx17.h" />
+    <ClInclude Include="LearningDemoCxx20.h" />
+    <ClInclude Include="LearningDemoCxx23.h" />
+    <ClInclude Include="LearningDemoCxx26.h" />
+    <ClInclude Include="LearningDemoSupport.h" />
     <ClInclude Include="StockDataStore.h" />
     <ClInclude Include="StockIndicators.h" />
     <ClInclude Include="StockPresentation.h" />

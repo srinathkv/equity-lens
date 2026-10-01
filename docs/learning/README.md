@@ -10,6 +10,7 @@ This curriculum is a comprehensive, example-driven tour of major C++ language an
 4. [C++20: Constraints and ranges](cpp20.md) — concepts, modules, coroutines, ranges, views, and managed concurrency.
 5. [C++23: Library expansion](cpp23.md) — `expected`, `mdspan`, modern ranges, formatting, and newer language syntax.
 6. [C++26: The next standard](cpp26.md) — evolving language and library facilities, execution, reflection/contracts directions, and support status.
+7. [Feature catalog](feature-catalog.md) — crosswalk from every topic named in these lessons to a chapter, conditional example, or support/design note.
 
 ## Six-week syllabus
 
@@ -41,9 +42,10 @@ Each week combines the linked language lesson with one small, tested EquityLens 
 2. Compile examples independently in the matching language mode, adding their listed headers and types. Some snippets are illustrative and require small surrounding declarations.
 3. Complete the practice items, including the design and lifetime questions—not only the syntax tasks.
 4. Run `EquityLens.exe learn` for a short offline demonstration; it does not call the provider or modify the database. Use features in production only when they improve the interface or correctness.
-5. Use compiler diagnostics and tests to verify examples on your own toolchain.
+5. Use the [feature catalog](feature-catalog.md) to find each concept's chapter treatment and support constraints.
+6. Use compiler diagnostics and tests to verify examples on your own toolchain.
 
-Run `EquityLens.exe learn` for an offline field guide through representative C++11, C++14, C++17, C++20, C++23, and C++26 facilities in a sample stock-data flow. It demonstrates ownership and moves, generic lambdas, vocabulary types, concepts and views, expected errors and range folding, and conditionally `std::inplace_vector` when the standard library advertises support. It does not call the provider or modify the database; see each linked lesson for detailed explanations, tradeoffs, and exercises.
+Run `EquityLens.exe learn` for an offline, six-chapter field guide through C++11, C++14, C++17, C++20, C++23, and C++26. The chapters cover ownership, compile-time tools, concurrency, vocabulary types, ranges, error results, and feature-gated library additions. See the [feature catalog](feature-catalog.md) for the coverage crosswalk and each lesson for explanations, tradeoffs, and exercises. The demo does not call the provider or modify the database.
 
 ## Compiler and standard-library support
 

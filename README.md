@@ -37,6 +37,7 @@ The application and test project target C++26 through MSVC's latest working-draf
 6. C++26 — support-aware exploration of evolving language and library facilities.
 
 The lessons connect the language features to this application's code and explain where a simpler design is preferable.
+The [`learn` command's feature catalog](docs/learning/feature-catalog.md) maps lesson topics to runnable, conditional, and support-note examples.
 
 ## License
 
