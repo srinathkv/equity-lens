@@ -3,6 +3,7 @@
 #include "StockPresentation.h"
 #include "StockStatistics.h"
 #include "AlphaVantageParsing.h"
+#include "LearningDemoCxx20.h"
 
 #include <chrono>
 #include <cmath>
@@ -334,6 +335,34 @@ namespace
 			"global quote should read its 06. volume field");
 		require(AlphaVantageParsing::parseDailyVolume(dailyObservation) == 654321,
 			"daily history should read its 5. volume field");
+		require(AlphaVantageParsing::parseVolume(nlohmann::json{ { "volume", 123456.0 } }, "volume") == 123456,
+			"integral JSON floating-point volume should be accepted");
+		requireThrows<std::runtime_error>([]
+			{
+				static_cast<void>(AlphaVantageParsing::parseVolume(nlohmann::json{ { "volume", 123456.5 } }, "volume"));
+			}, "fractional JSON volume should be rejected");
+		requireThrows<std::runtime_error>([]
+			{
+				static_cast<void>(AlphaVantageParsing::parseVolume(nlohmann::json{ { "volume", "-1" } }, "volume"));
+			}, "negative volume should be rejected");
+	}
+
+	/** @brief Verifies that C++20 practice accepts the correct answer and explains failed attempts. */
+	void cpp20PracticeChecksAndExplainsRangesExercise()
+	{
+		std::istringstream correctInput{ "19\n20\n" };
+		std::ostringstream correctOutput;
+		require(EquityLensLearning::runCpp20Practice(correctInput, correctOutput),
+			"practice should accept a correct answer within the attempt limit");
+		require(correctOutput.str().find("Correct.") != std::string::npos,
+			"practice should explain the correct ranges result");
+
+		std::istringstream incorrectInput{ "19\n18\n17\n" };
+		std::ostringstream incorrectOutput;
+		require(!EquityLensLearning::runCpp20Practice(incorrectInput, incorrectOutput),
+			"practice should report an incorrect result after three attempts");
+		require(incorrectOutput.str().find("Answer: 20") != std::string::npos,
+			"practice should reveal the expected total after failed attempts");
 	}
 }
 
@@ -351,5 +380,6 @@ int main()
 	runTest("SQLite persistence, ranges, and upserts", sqliteStorePersistsQueriesAndUpsertsPrices);
 	runTest("SQLite rejects invalid prices and ranges", sqliteStoreRejectsInvalidPricesAndRanges);
 	runTest("Alpha Vantage endpoint volume schemas", alphaVantageVolumeParsingMatchesEndpointSchemas);
+	runTest("C++20 ranges practice", cpp20PracticeChecksAndExplainsRangesExercise);
 	return failures == 0 ? 0 : 1;
 }

@@ -8,6 +8,7 @@
 #include <chrono>
 #include <compare>
 #include <concepts>
+#include <charconv>
 #include <cstddef>
 #include <cstdint>
 #include <future>
@@ -17,6 +18,7 @@
 #include <span>
 #include <stop_token>
 #include <string>
+#include <system_error>
 #include <thread>
 #include <type_traits>
 #include <version>
@@ -49,6 +51,49 @@ namespace EquityLensLearning
 	static_assert(validatedWindow(20) == 20, "consteval runs during translation");
 	/** @brief Default rolling window initialized during static initialization. */
 	inline constinit int defaultWindow = 20;
+
+	/** @brief Asks a deterministic ranges exercise and reports whether the answer is correct.
+	 * @param input Source of learner guesses.
+	 * @param output Destination for the question, feedback, and answer explanation.
+	 * @return True when the learner answers correctly within three attempts.
+	 */
+	inline bool runCpp20Practice(std::istream& input, std::ostream& output)
+	{
+		constexpr std::array<int, 5> values{ 1, 2, 3, 4, 5 };
+		const auto squaredEvenValues = values | std::views::filter([](int value) {
+			return value % 2 == 0;
+		}) | std::views::transform([](int value) {
+			return value * value;
+		});
+		const int expected = std::accumulate(squaredEvenValues.begin(), squaredEvenValues.end(), 0);
+
+		output << "\nPractice: From {1, 2, 3, 4, 5}, keep even values, square them, then sum them.\n"
+			<< "Enter the integer total (up to three attempts): ";
+		for (unsigned attempt = 0; attempt < 3; ++attempt)
+		{
+			std::string answer;
+			if (!std::getline(input, answer))
+			{
+				output << "\nNo answer received. The total is " << expected << " (2*2 + 4*4).\n";
+				return false;
+			}
+
+			int parsedAnswer = 0;
+			const auto [end, error] = std::from_chars(answer.data(), answer.data() + answer.size(), parsedAnswer);
+			if (error == std::errc{} && end == answer.data() + answer.size() && parsedAnswer == expected)
+			{
+				output << "Correct. The filtered values are 2 and 4, so the squares sum to " << expected << ".\n";
+				return true;
+			}
+			if (attempt < 2)
+			{
+				output << "Not quite. Try again: ";
+			}
+		}
+
+		output << "Answer: " << expected << " (2*2 + 4*4).\n";
+		return false;
+	}
 
 	/** @brief Computes an arithmetic mean for an input range convertible to double.
 	 * @tparam Range Input range type satisfying the constrained requirements.

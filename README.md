@@ -20,6 +20,7 @@ Set `ALPHAVANTAGE_API_KEY` in the app's environment. In Visual Studio, use **Pro
 - `EquityLens.exe indicators AAPL` — show the latest 60 saved closes with SMA(14), Wilder RSI(14), and 20-day Bollinger Bands (two population standard deviations); warm-up values are shown as `-`.
 - `EquityLens.exe chart AAPL` — render the latest 60 saved observations as ASCII candlesticks; `#` is up, `o` is down, `=` is unchanged, and `|` is the high/low wick.
 - `EquityLens.exe export AAPL AAPL.csv` — export saved OHLCV history as escaped, locale-independent CSV.
+- `EquityLens.exe learn [all|11|14|17|20|23|26] [--practice]` — run the offline C++ learning guide; use `--practice` only with chapter 20 for a checked ranges exercise.
 - `EquityLens.exe` — enter symbols one per line and submit a blank line when finished.
 - `EquityLens.exe --help` — display command usage.
 

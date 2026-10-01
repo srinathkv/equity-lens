@@ -170,7 +170,7 @@ namespace
 			<< "  EquityLens.exe indicators SYMBOL Show SMA14, Wilder RSI14, and 20-day Bollinger bands\n"
 			<< "  EquityLens.exe chart SYMBOL   Render the latest 60 saved observations as ASCII candles\n"
 			<< "  EquityLens.exe export SYMBOL FILE.csv Export saved OHLCV history to CSV\n"
-			<< "  EquityLens.exe learn          Run the offline modern C++ learning demo\n"
+			<< "  EquityLens.exe learn [chapter] [--practice for 20] Run chapters or the C++20 exercise\n"
 			<< "  EquityLens.exe                Enter symbols interactively\n";
 	}
 }
@@ -192,9 +192,19 @@ int main(int argc, char* argv[])
 			return 0;
 		}
 
-		if (argc == 2 && std::string_view{ argv[1] } == "learn")
+		if (argc >= 2 && std::string_view{ argv[1] } == "learn")
 		{
-			return runLearningDemo();
+			if (argc > 4 || (argc == 3 && std::string_view{ argv[2] } == "--practice"))
+			{
+				throw std::invalid_argument("Usage: EquityLens.exe learn [all|11|14|17|20|23|26] [--practice for 20]");
+			}
+			const std::string_view chapter = argc >= 3 ? argv[2] : "all";
+			const bool practice = argc == 4 && std::string_view{ argv[3] } == "--practice";
+			if (argc == 4 && !practice)
+			{
+				throw std::invalid_argument("Usage: EquityLens.exe learn [all|11|14|17|20|23|26] [--practice for 20]");
+			}
+			return runLearningDemo(chapter, practice);
 		}
 
 		if (argc >= 2 && std::string_view{ argv[1] } == "stats")

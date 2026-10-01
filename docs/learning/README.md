@@ -55,12 +55,12 @@ Each week starts with standalone practice and tests from the [Progressive Offlin
 1. Read the lesson in sequence; later features build on earlier value, lifetime, and type-system concepts.
 2. Compile examples independently in the matching language mode. Each lesson labels whether a snippet is a complete program or a focused fragment; fragments require the stated surrounding declarations and headers.
 3. Complete the practice items, including the design and lifetime questions—not only the syntax tasks.
-4. Run `EquityLens.exe learn` for a short offline demonstration; it does not call the provider or modify the database. Use features in production only when they improve the interface or correctness.
+4. Run `EquityLens.exe learn` for all offline chapters, or `EquityLens.exe learn 20` to focus on one chapter. Add `--practice` to `learn 20` for a checked ranges exercise with up to three attempts. These commands do not call the provider or modify the database. Use features in production only when they improve the interface or correctness.
 5. Use the [feature catalog](feature-catalog.md) to find each concept's chapter treatment and support constraints.
 6. Read [Advanced examples: concepts and tradeoffs](advanced-examples.md) to understand the chapter implementations, lifetimes, error paths, and concurrency choices.
 7. Use compiler diagnostics and tests to verify examples on your own toolchain.
 
-Run `EquityLens.exe learn` for an offline, six-chapter advanced field guide through C++11, C++14, C++17, C++20, C++23, and C++26. The chapters combine ownership and borrowed-lifetime examples, concurrent aggregation, a variadic-template example, generic transformations, vocabulary-type error handling, constrained/ranges analytics, latch synchronization, and feature-gated move-only callable, multidimensional, and bounded-storage examples. Use the [feature catalog](feature-catalog.md) for the crosswalk and [Advanced examples: concepts and tradeoffs](advanced-examples.md) for detailed explanations. The demo does not call the provider or modify the database.
+Run `EquityLens.exe learn` for the complete offline, six-chapter advanced field guide through C++11, C++14, C++17, C++20, C++23, and C++26, or add a chapter number (`11`, `14`, `17`, `20`, `23`, or `26`) to focus the output. `EquityLens.exe learn 20 --practice` adds a checked ranges exercise. The chapters combine ownership and borrowed-lifetime examples, concurrent aggregation, a variadic-template example, generic transformations, vocabulary-type error handling, constrained/ranges analytics, latch synchronization, and feature-gated move-only callable, multidimensional, and bounded-storage examples. Use the [feature catalog](feature-catalog.md) for the crosswalk and [Advanced examples: concepts and tradeoffs](advanced-examples.md) for detailed explanations. The demo does not call the provider or modify the database.
 
 ## Compiler and standard-library support
 
