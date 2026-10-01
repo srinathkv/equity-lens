@@ -1,5 +1,7 @@
 # Progressive Project: Offline Quote Analyzer
 
+For the integrated, multi-file version with a sample executable, learner milestones, and an always-on test target, see the [runnable Quote Analyzer project](projects/quote-analyzer/README.md). Complete this outline as the progressive design brief, then build and extend that project after the chapter labs.
+
 Build one small analyzer incrementally as you move through the lessons. It uses fixed sample data only: no API key, network request, database, or production-code change is required. Start with a standalone console program and retain the same sample inputs and checks as the implementation evolves.
 
 ## Project contract
@@ -59,3 +61,7 @@ Check the compiler and library feature status for a bounded container such as `s
 - Each non-owning reference or view has a clearly identified live owner.
 - The simple loop and the advanced abstraction have equivalent observable results.
 - EquityLens production code is consulted only after the standalone milestone is complete; adapting a learning exercise into production is optional and requires separate design and tests.
+
+## Larger-project transition
+
+The milestone exercises isolate individual language concepts. The multi-file project adds translation-unit boundaries, public interfaces, implementation files, test/application separation, and integration debugging. Use C++17 as the stable baseline; treat C++20–C++26 extensions as optional work gated on the actual compiler and library support.

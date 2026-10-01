@@ -78,3 +78,15 @@ The application and test project use MSVC's latest C++ mode (`/std:c++latest`). 
 ## Suggested capstone sequence
 
 Follow the linked [Progressive Offline Quote Analyzer](quote-analyzer-project.md) milestones from beginner functions and containers through support-aware C++26 exploration. After completing the standalone stages, use the existing EquityLens code as an optional comparison and adapt an idea to production only when it improves a real design and has appropriate tests.
+
+## Larger runnable project
+
+The lesson exercises isolate one concept at a time. For multi-file integration practice after C++17, continue with the [Offline Quote Analyzer project](projects/quote-analyzer/README.md). It includes a quote model, parser, analysis module, console application, and separate test executable using deterministic local data.
+
+From the repository root in Developer PowerShell for Visual Studio, run its tests and sample application:
+
+```powershell
+.\docs\learning\projects\quote-analyzer\run-project.ps1 -Action All
+```
+
+The project uses a C++17 baseline and does not require network access, credentials, SQLite, or C++23/C++26 library features. Its README documents milestones, ownership boundaries, and extensions.
