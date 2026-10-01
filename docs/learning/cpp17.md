@@ -1,6 +1,23 @@
 # C++17: Vocabulary Types and Safer Data Flow
 
-C++17 added vocabulary types and syntax that make common data-flow cases explicit. EquityLens already uses several of these features.
+C++17 added vocabulary types and syntax that make common data-flow cases explicit. Learn to model local inputs and failure before comparing with application storage.
+
+## Prerequisites
+
+Complete the C++14 lesson and lab. Be comfortable with generic functions, value lifetimes, and validating numeric input.
+
+## Learning outcomes
+
+By the end of this chapter, you can:
+
+- Use `optional` to represent a missing value without inventing a sentinel.
+- Parse a complete numeric field with `from_chars`, checking both its error code and end pointer.
+- Return an owning value from a parser that accepts a non-owning `string_view`.
+- Explain when `variant` is preferable to an unstructured runtime type.
+
+## Prediction
+
+Before running the parser lab, predict what happens when a numeric field has valid leading digits followed by extra characters. Explain why a successful numeric prefix is not a successful record parse.
 
 ## Language features
 
@@ -62,6 +79,24 @@ Filesystem paths are safer and more portable than hand-concatenated path strings
 
 Other additions include `std::string_view` (a non-owning view whose source must remain alive), `std::from_chars`/`std::to_chars` (locale-independent conversion), `std::clamp`, node handles for associative containers, `std::shared_mutex`, and parallel algorithm execution policies.
 
+## Guided lab: optional parsing and input boundaries
+
+From the repository root, run the starter:
+
+```powershell
+.\docs\learning\exercises\run-lab.ps1 -Standard c++17 -Source docs\learning\exercises\cpp17-parsing-starter.cpp
+```
+
+Implement `parseQuote` so the returned quote owns its symbol and invalid or partially parsed records produce `std::nullopt`. Add an independent malformed-input check.
+
+Run the reference solution after completing the starter:
+
+```powershell
+.\docs\learning\exercises\run-lab.ps1 -Standard c++17 -Source docs\learning\exercises\cpp17-parsing.cpp
+```
+
+Expected result: `C++17 Parsing: All 8 checks passed.`
+
 ## Practice
 
 1. Parse a local optional quote and distinguish no value from a fabricated zero quote.
@@ -69,6 +104,10 @@ Other additions include `std::string_view` (a non-owning view whose source must 
 3. Parse a numeric string with `from_chars`, rejecting errors and partial parses.
 4. Pass a `string_view` to a parser and explain how the caller guarantees the source outlives the view.
 5. Mark an exercise function `[[nodiscard]]` and observe the compiler diagnostic when its result is ignored.
+
+## Mastery check
+
+Advance when all parser checks pass and you can explain the difference between a missing value and a failed operation, why `string_view` does not own its characters, and how the end pointer rejects trailing text.
 
 ## Optional follow-up: EquityLens connection
 

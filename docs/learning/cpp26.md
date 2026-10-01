@@ -2,6 +2,23 @@
 
 C++26 names the standard generation following C++23. Feature wording, publication timing, and implementation availability can differ by facility and toolchain. This lesson separates the standard's facilities from proposals and implementation status; it is not a promise that every feature is usable in every C++26/latest-mode compiler. Check current standard and vendor documentation, feature-test macros, and library support before relying on a feature.
 
+## Prerequisites
+
+Complete the C++23 lesson and feature-support exercise. Be comfortable with generic containers, compile-time configuration, and the distinction between a compiler language mode and library implementation.
+
+## Learning outcomes
+
+By the end of this chapter, you can:
+
+- Separate standardized facilities from proposals and vendor-specific implementation status.
+- Inspect a library feature-test macro and select a behaviorally honest fallback.
+- Compare bounded in-object storage with dynamically growing storage, including capacity limits.
+- Explain why a latest language mode does not guarantee library feature availability.
+
+## Prediction
+
+Before running the lab, predict which implementation the feature-test branch selects on your toolchain. State whether the fallback has the same fixed-capacity guarantee.
+
 ## Language features and directions
 
 ### Reflection
@@ -39,6 +56,24 @@ The `learn` command demonstrates this container when the standard library advert
 
 `std::execution` in this lesson refers to the C++26 sender/receiver facility, not the existing C++17 execution-policy overloads for parallel algorithms. The latter are demonstrated in the C++17 chapter and do not imply sender/receiver support.
 
+## Guided lab: support-aware bounded storage
+
+Run the lab in MSVC latest mode:
+
+```powershell
+.\docs\learning\exercises\run-lab.ps1 -Standard c++latest -Source docs\learning\exercises\cpp26-inplace-vector-starter.cpp
+```
+
+Implement the range summation without taking ownership. If `__cpp_lib_inplace_vector >= 202406L`, verify fixed capacity and the sum using `std::inplace_vector`. Otherwise, the starter deliberately uses `std::vector` only to exercise the algorithm; its output labels the fallback and does not claim fixed-capacity semantics.
+
+Run the reference implementation:
+
+```powershell
+.\docs\learning\exercises\run-lab.ps1 -Standard c++latest -Source docs\learning\exercises\cpp26-inplace-vector.cpp
+```
+
+Expected result: `C++26 Capacity-Aware Container: All checks passed.` The summary count is two when the feature is available and one on the fallback path. Record the compiler version, macro value, and which branch ran.
+
 ## Practice
 
 1. Find the C++26 feature-status page for your compiler and record which features in this lesson are implemented.
@@ -47,6 +82,10 @@ The `learn` command demonstrates this container when the standard library advert
 4. Compare an explicit quote formatter with a hypothetical reflection-based formatter; list the simplicity and support tradeoffs.
 5. Compile a small test under the compiler's C++26/latest mode only when the specific feature is documented as supported.
 6. Compare `std::inplace_vector` with `std::vector` for a bounded batch of price observations; discuss capacity failure and object size. Check the standard-library feature-test macro rather than relying on compiler-version checks.
+
+## Mastery check
+
+Advance when the reference lab passes and you can state what guarantee is lost on the fallback path, distinguish feature-test status from language mode, and name a simpler alternative for an unbounded collection.
 
 ## Optional follow-up: EquityLens connection
 

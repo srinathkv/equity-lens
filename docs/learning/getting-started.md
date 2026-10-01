@@ -1,6 +1,22 @@
 # Getting Started: Your First C++ Program
 
 This lesson is for learners new to C++ or returning after a long break. It introduces the workflow and language building blocks used by the C++11–C++26 lessons. Examples here use C++11-compatible syntax unless stated otherwise.
+## Prerequisites
+
+None. This chapter starts from a blank source file. You should be able to open a text editor and run a command in PowerShell.
+
+## Learning outcomes
+
+By the end of this chapter, you can:
+
+- Compile and run a complete C++ program and distinguish a compile error from a link error.
+- Use basic types, functions, conditions, loops, and `std::vector` to represent and process values.
+- Explain the difference between owning a value and borrowing it through a pointer or reference.
+- Run deterministic checks and add a boundary case for a small function.
+
+## Core model
+
+C++ makes object lifetime and type part of program design. A variable has a type and a lifetime; a reference or pointer only provides access and does not extend the lifetime of its target. Tests check the behavior you intended, while the compiler checks whether the program is well-formed.
 
 ## What you need
 
@@ -14,7 +30,7 @@ To build the full application, open `EquityLens.slnx` in Visual Studio, select t
 
 ## First program
 
-This is a complete program. Save it as `hello.cpp`, compile it with a C++11-or-later compiler, then run it:
+Before compiling, predict the two output lines and identify which object owns the symbol text. This is a complete program. Save it as `hello.cpp`, compile it with a C++11-compatible compiler, then run it:
 
 ```cpp
 #include <iostream>
@@ -188,7 +204,7 @@ Before reading the reference implementation, write two functions in a new C++ fi
 1. `dailyChange(openingPrice, closingPrice)` returns closing price minus opening price.
 2. `countClosesAbove(closes, threshold)` counts values strictly greater than the threshold; an empty vector returns zero.
 
-Test positive and negative daily change, values above and exactly on a threshold, and an empty vector. Compare your work with the complete [C++11 exercise and self-checks](exercises/getting-started.cpp). Its assertions cover those cases and print `All 5 checks passed.` on success. Assertions stop at the first failed check; build without `NDEBUG` so they remain enabled.
+Test positive and negative daily change, values above and exactly on a threshold, and an empty vector. Start with [getting-started-starter.cpp](exercises/getting-started-starter.cpp), then use the shared check runner to verify your implementation. Compare your completed work with the [reference solution](exercises/getting-started.cpp); it prints `Getting Started: All 5 checks passed.`. The check harness remains active in Release builds.
 
 After the checks pass, change sample prices, add a test for your new case, and predict the result before running it. The exercise uses fixed data and does not access the provider or database.
 
@@ -203,14 +219,19 @@ After the checks pass, change sample prices, add a test for your new case, and p
    ```
 
    Output includes `Hello, C++ learner!` and `Sample symbol: AAPL`.
-2. From the repository root, compile and run the assertion-based lab in the temporary directory:
+2. From the repository root, run the learner starter. The checks initially fail until you complete both functions; rerun the command until all five pass:
 
    ```powershell
-   cl /nologo /std:c++14 /EHsc /W4 /Fe:"$env:TEMP\getting-started.exe" docs\learning\exercises\getting-started.cpp
-   & "$env:TEMP\getting-started.exe"
+   .\docs\learning\exercises\run-lab.ps1 -Standard c++14 -Source docs\learning\exercises\getting-started-starter.cpp
    ```
 
-   A successful run prints `All 5 checks passed.` These commands do not define `NDEBUG`, so assertions remain enabled.
+   Run the reference solution to compare its behavior:
+
+   ```powershell
+   .\docs\learning\exercises\run-lab.ps1 -Standard c++14 -Source docs\learning\exercises\getting-started.cpp
+   ```
+
+   The runner puts executables under `$env:TEMP` and returns a nonzero exit code if compilation or a check fails. The checks do not use `assert`, so they remain active in Release builds.
 3. Change the price values and observe the output; then intentionally introduce a syntax or type error and read the compiler diagnostic.
 4. Build the EquityLens solution in Visual Studio as described above.
 5. Run `EquityLens.exe --help` to see application commands.
@@ -229,6 +250,15 @@ When a build fails, start with the first compiler error, confirm the selected so
 - What is the difference between a compile error and a link error?
 - Why should external values be validated even after parsing?
 - Which command runs the learning demo without accessing the provider?
+
+## Mastery check
+
+You are ready to continue when you can:
+
+- Build and run both complete beginner examples without relying on Visual Studio to hide the compiler command.
+- Complete the two starter functions and receive five passing checks, including the empty-input case.
+- Explain why returning a reference to a local object is invalid and why a pointer does not imply ownership.
+- Add a test for a new threshold or price case and predict its result before running it.
 
 ## Next
 

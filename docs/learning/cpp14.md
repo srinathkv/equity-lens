@@ -2,6 +2,22 @@
 
 C++14 is a refinement release. It reduces template and lambda boilerplate while preserving the C++11 ownership and lifetime model.
 
+## Prerequisites
+
+Complete the C++11 foundations lesson and ownership lab. Understand typed lambdas, `std::vector`, move semantics, and object lifetimes.
+
+## Learning outcomes
+
+By the end of this chapter, you can:
+
+- Compare a typed lambda with a generic lambda and justify which is clearer for a given operation.
+- Use a generalized lambda capture to make a closure own moved state.
+- Use relaxed `constexpr` and `static_assert` to check a compile-time property.
+
+## Prediction
+
+Before running the lab, predict whether the caller's vector remains usable after it is passed by value and moved into a returned closure.
+
 ## `std::make_unique`
 
 `make_unique` constructs an object and immediately returns its sole owner. This C++14 fragment avoids spelling `new` and prevents an unowned pointer from appearing between allocation and ownership transfer:
@@ -61,6 +77,24 @@ Whether a call is evaluated at compile time depends on its arguments and context
 - `std::exchange` replaces an object value and returns its previous value; useful in move operations.
 - Chrono duration literals provide readable duration values.
 
+## Guided lab: generic projection and move capture
+
+From the repository root, run the starter:
+
+```powershell
+.\docs\learning\exercises\run-lab.ps1 -Standard c++14 -Source docs\learning\exercises\cpp14-generic-starter.cpp
+```
+
+Implement the generic projection and the callable that captures its vector snapshot by move. Add a quote-like type with an extra member and verify the projection remains generic.
+
+Run the reference solution after completing the starter:
+
+```powershell
+.\docs\learning\exercises\run-lab.ps1 -Standard c++14 -Source docs\learning\exercises\cpp14-generic.cpp
+```
+
+Expected result: `C++14 Generic Programming: All 6 checks passed.`
+
 ## Practice
 
 1. Write generic lambdas for close price and volume; call them with your local quote type.
@@ -68,6 +102,10 @@ Whether a call is evaluated at compile time depends on its arguments and context
 3. Write a `constexpr` function that converts a percentage to basis points and test it with `static_assert`.
 4. Use a variable template for a compile-time column count and decide whether it helps a real feature.
 5. Replace a direct `unique_ptr(new T(...))` exercise with `std::make_unique`.
+
+## Mastery check
+
+Advance when the starter passes and you can explain why the closure owns its snapshot, why generic syntax is useful here, and when a typed lambda would be clearer. Add one test using a different quote-like type.
 
 ## Optional follow-up: EquityLens connection
 

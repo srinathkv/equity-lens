@@ -2,6 +2,23 @@
 
 The application uses MSVC's latest supported language mode. C++23 adds library types that can improve error contracts and represent views over existing storage. Availability varies by compiler and standard-library version, so verify support before relying on a feature in a product build.
 
+## Prerequisites
+
+Complete the C++20 ranges and concepts lesson. Be comfortable with `optional`, `string_view`, error-code parsing, and feature-test macros.
+
+## Learning outcomes
+
+By the end of this chapter, you can:
+
+- Implement an `expected`-returning parser and distinguish success from an input diagnostic.
+- Reject incomplete, invalid, and non-finite numeric inputs.
+- Explain how `mdspan` and range views borrow storage and when their owner must remain alive.
+- Check the standard-library feature-test macro and document a tested fallback.
+
+## Prediction
+
+Before running the parser lab, predict the result for `"12.5tail"`. Then explain whether a compile mode alone is enough to establish `std::expected` support.
+
 ## Language features
 
 - Explicit object parameters (often called “deducing this”) make the object parameter explicit and can reduce cv/ref-qualified overload sets or support recursive lambdas.
@@ -79,6 +96,24 @@ task();
 
 The referenced stream must outlive invocation. The offline chapter checks `__cpp_lib_move_only_function` before compiling this example and otherwise prints a support note.
 
+## Guided lab: `expected` and full-input validation
+
+From the repository root, run the starter with MSVC latest mode:
+
+```powershell
+.\docs\learning\exercises\run-lab.ps1 -Standard c++latest -Source docs\learning\exercises\cpp23-expected-starter.cpp
+```
+
+If the standard library provides `std::expected` (`__cpp_lib_expected >= 202202L`), implement `parseClose`. Reject empty input, parse errors, trailing characters, non-finite values, and non-positive closes. If the feature-test macro is absent, the lab prints a skip message; use the C++17 optional parser rather than substituting a different contract and claiming it exercises `expected`.
+
+Run the reference implementation:
+
+```powershell
+.\docs\learning\exercises\run-lab.ps1 -Standard c++latest -Source docs\learning\exercises\cpp23-expected.cpp
+```
+
+Expected on a supporting library: `C++23 Expected Parsing: All 6 checks passed.` On an unsupported library, expected outcome is an explicit `SKIP` message and successful process exit. Record compiler version and feature-test macro status.
+
 ## Version note and practice
 
 `std::jthread` was introduced in C++20, even though it is useful in a C++23 application.
@@ -88,6 +123,10 @@ The referenced stream must outlive invocation. The offline chapter checks `__cpp
 3. Build an `mdspan` over synthetic OHLC values and document its owner and storage layout.
 4. Compare exceptions and `expected` for malformed local records and state which errors are routine input failures.
 5. Check the library feature-test macro before using a C++23 library facility.
+
+## Mastery check
+
+Advance when the supported implementation passes all checks or the unsupported path clearly reports a skip, and you can explain why full consumption matters and who owns the storage viewed by `mdspan`.
 
 ## Optional follow-up: EquityLens connection
 

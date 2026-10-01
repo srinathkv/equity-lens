@@ -1,7 +1,6 @@
 #include "LabChecks.h"
 
 #include <cstddef>
-#include <iostream>
 #include <vector>
 
 /**
@@ -11,7 +10,9 @@
  * @return The closing price minus the opening price.
  */
 double dailyChange(double openingPrice, double closingPrice) {
-	return closingPrice - openingPrice;
+	static_cast<void>(openingPrice);
+	static_cast<void>(closingPrice);
+	return 0.0;
 }
 
 /**
@@ -21,18 +22,14 @@ double dailyChange(double openingPrice, double closingPrice) {
  * @return The number of prices greater than the threshold.
  */
 std::size_t countClosesAbove(const std::vector<double>& closes, double threshold) {
-	std::size_t count = 0;
-	for (const double close : closes) {
-		if (close > threshold) {
-			++count;
-		}
-	}
-	return count;
+	static_cast<void>(closes);
+	static_cast<void>(threshold);
+	return 0;
 }
 
 /**
- * @brief Runs the beginner lab's automated self-checks.
- * @return Zero when all checks pass.
+ * @brief Runs the beginner lab's checks against the learner implementation.
+ * @return Zero when every check passes; otherwise, one.
  */
 int main() {
 	const std::vector<double> closes{190.0, 193.5, 191.0, 200.5};
