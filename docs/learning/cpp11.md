@@ -15,6 +15,18 @@ The wrapper closes the session automatically when it leaves scope. This prevents
 
 Use `std::unique_ptr` when one object owns a resource. `std::shared_ptr` is for genuinely shared ownership and should not be added just because it exists; reference counting adds complexity and can hide unclear ownership.
 
+### Borrowed pointers and references
+
+A raw pointer can be a non-owning observer. The caller and callee must agree that the object remains alive while the pointer is used:
+
+```cpp
+const StockPrice& first = prices.front();
+const StockPrice* borrowed = &first;
+std::cout << borrowed->close << '\n';
+```
+
+This focused fragment assumes a non-empty `prices` container and `<iostream>`. `borrowed` does not extend the lifetime and must not be deleted. `prices.front()` is undefined for an empty container, so validate non-emptiness before accessing it. The C++11 demo's sample array has static lifetime and is non-empty, making its borrowed pointer safe for the chapter.
+
 ## Lambdas
 
 A lambda keeps a short operation next to the algorithm that uses it. For example, choosing the earliest quote can be expressed as a comparator:

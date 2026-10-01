@@ -2,7 +2,7 @@
 
 This guide explains the design choices behind the six offline chapters invoked by `EquityLens.exe learn`. The demo uses a fixed stock-price sample; it does not call Alpha Vantage, open SQLite, or change production data. The [feature catalog](feature-catalog.md) maps the supplied standards matrix to the examples, and each standard's [lesson](README.md#lesson-order) provides additional background and exercises.
 
-The chapters demonstrate the concepts selected for this project, not every overload or wording detail in ISO C++. Code examples that depend on compiler or standard-library support check feature-test macros and explain a fallback. A `/std:c++latest` build enables MSVC's latest working-draft mode; it does not mean every C++26 facility is implemented.
+The chapters demonstrate selected concepts, not every overload or wording detail in ISO C++. They are an advanced supplement, not a first C++ lesson; begin with [Getting Started](getting-started.md) if program structure, references, classes, and pointer safety are new. Code examples that depend on compiler or standard-library support check feature-test macros and explain a fallback. A `/std:c++latest` build enables MSVC's latest supported mode; it does not mean every C++26 facility is implemented.
 
 ## Shared data model
 
@@ -15,6 +15,8 @@ See [`LearningDemoCxx11.h`](../../EquityLens/LearningDemoCxx11.h) and [C++11: Fo
 ### Types, initialization, and algorithms
 
 `auto` deduces an expression's type; it does not make the object dynamically typed. `decltype` can name an expression's type when a declaration needs to preserve it. Range-based `for` visits the fixed sample without manual iterator management. `nullptr` is a pointer-specific null value, unlike integer `0`, and `enum class` prevents direction labels such as `up` from leaking into the surrounding scope or converting implicitly to integers.
+
+The chapter also takes a reference and a raw pointer to the first sample. These are borrowed aliases, not owners: the sample array's static lifetime makes the access valid. A raw pointer does not communicate ownership by itself; use an owning smart pointer when the code must manage a dynamically allocated object's lifetime.
 
 A typed lambda passed to `std::count_if` expresses the selection rule next to the algorithm. This avoids a hand-written loop when the operation is simply a predicate count. The same data can also be accumulated with a range-for when a mutable local total makes the computation clearer.
 

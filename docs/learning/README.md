@@ -4,14 +4,26 @@ This curriculum is an example-driven tour of selected major C++ language and sta
 
 ## Lesson order
 
-1. [C++11: Foundations](cpp11.md) — value semantics, RAII, move operations, lambdas, templates, and concurrency.
-2. [C++14: Generic programming](cpp14.md) — generic lambdas, generalized captures, constexpr improvements, and utilities.
-3. [C++17: Vocabulary types](cpp17.md) — structured bindings, `optional`, `variant`, `string_view`, filesystem, and compile-time branching.
-4. [C++20: Constraints and ranges](cpp20.md) — concepts, modules, coroutines, ranges, views, and managed concurrency.
-5. [C++23: Library expansion](cpp23.md) — `expected`, `mdspan`, modern ranges, formatting, and newer language syntax.
-6. [C++26: The next standard](cpp26.md) — evolving language and library facilities, execution, reflection/contracts directions, and support status.
-7. [Feature catalog](feature-catalog.md) — crosswalk from every topic named in these lessons to a chapter, conditional example, or support/design note.
-8. [Advanced examples: concepts and tradeoffs](advanced-examples.md) — detailed walkthrough of ownership, concurrency, constraints, views, errors, and support-sensitive features in `learn`.
+1. [Getting started: Your first C++ program](getting-started.md) — types, functions, references, containers and insertion (`push_back`, `emplace_back`, `insert`), basic errors, and build/run workflow.
+2. [C++11: Foundations](cpp11.md) — value semantics, RAII, move operations, lambdas, templates, and concurrency.
+3. [C++14: Generic programming](cpp14.md) — generic lambdas, generalized captures, constexpr improvements, and utilities.
+4. [C++17: Vocabulary types](cpp17.md) — structured bindings, `optional`, `variant`, `string_view`, filesystem, and compile-time branching.
+5. [C++20: Constraints and ranges](cpp20.md) — concepts, modules, coroutines, ranges, views, and managed concurrency.
+6. [C++23: Library expansion](cpp23.md) — `expected`, `mdspan`, modern ranges, formatting, and newer language syntax.
+7. [C++26: The next standard](cpp26.md) — evolving language and library facilities, execution, reflection/contracts directions, and support status.
+8. [Feature catalog](feature-catalog.md) — crosswalk from every topic named in these lessons to a chapter, conditional example, or support/design note.
+9. [Advanced examples: concepts and tradeoffs](advanced-examples.md) — detailed walkthrough of ownership, concurrency, constraints, views, errors, and support-sensitive features in `learn`.
+
+### Beginner entry path
+
+If you are new to C++ or have not built and run a C++ program before, follow this brief entry path before the six-week syllabus:
+
+1. Complete [Getting started: Your first C++ program](getting-started.md) to learn the build/run workflow, basic types, functions, and containers.
+2. After finishing Getting started, proceed to the Six-week syllabus below; the first week continues the C++11 foundations with ownership and API-lifetime exercises.
+
+## Before the six-week syllabus
+
+Complete [Getting Started](getting-started.md) first if you have not written, compiled, and run a C++ program before. It introduces program structure, types, functions, references, classes, containers, pointer basics, errors, and the compiler/linker workflow.
 
 ## Six-week syllabus
 
@@ -28,7 +40,7 @@ Each week combines the linked language lesson with one small, tested EquityLens 
 
 | Area | Start here | Continue here |
 |---|---|---|
-| Ownership, lifetime, move semantics | [C++11](cpp11.md) | [C++14](cpp14.md), [C++20](cpp20.md) |
+| Ownership, borrowing, lifetime, move semantics | [Getting started](getting-started.md) | [C++11](cpp11.md), [C++14](cpp14.md), [C++20](cpp20.md) |
 | Type inference, lambdas, templates | [C++11](cpp11.md) | [C++14](cpp14.md), [C++17](cpp17.md), [C++20](cpp20.md) |
 | Value/error representation | [C++17](cpp17.md) | [C++23](cpp23.md) |
 | Algorithms and ranges | [C++11](cpp11.md) | [C++17](cpp17.md), [C++20](cpp20.md), [C++23](cpp23.md) |
@@ -36,6 +48,7 @@ Each week combines the linked language lesson with one small, tested EquityLens 
 | Threads and asynchronous design | [C++11](cpp11.md) | [C++20](cpp20.md), [C++26](cpp26.md) |
 | Compile-time programming | [C++11](cpp11.md) | [C++14](cpp14.md), [C++17](cpp17.md), [C++20](cpp20.md), [C++23](cpp23.md) |
 | New and evolving standard facilities | [C++23](cpp23.md) | [C++26](cpp26.md) |
+| First program, functions, and basic errors | [Getting started](getting-started.md) | [C++11](cpp11.md), [C++17](cpp17.md) |
 
 ## How to use the lessons
 
@@ -47,7 +60,7 @@ Each week combines the linked language lesson with one small, tested EquityLens 
 6. Read [Advanced examples: concepts and tradeoffs](advanced-examples.md) to understand the chapter implementations, lifetimes, error paths, and concurrency choices.
 7. Use compiler diagnostics and tests to verify examples on your own toolchain.
 
-Run `EquityLens.exe learn` for an offline, six-chapter advanced field guide through C++11, C++14, C++17, C++20, C++23, and C++26. The chapters combine ownership-safe ingestion, concurrent aggregation, a variadic-template example, generic transformations, vocabulary-type error handling, constrained/ranges analytics, latch synchronization, and feature-gated move-only callable, multidimensional, and bounded-storage examples. Use the [feature catalog](feature-catalog.md) for the crosswalk and [Advanced examples: concepts and tradeoffs](advanced-examples.md) for detailed explanations. The demo does not call the provider or modify the database.
+Run `EquityLens.exe learn` for an offline, six-chapter advanced field guide through C++11, C++14, C++17, C++20, C++23, and C++26. The chapters combine ownership and borrowed-lifetime examples, concurrent aggregation, a variadic-template example, generic transformations, vocabulary-type error handling, constrained/ranges analytics, latch synchronization, and feature-gated move-only callable, multidimensional, and bounded-storage examples. Use the [feature catalog](feature-catalog.md) for the crosswalk and [Advanced examples: concepts and tradeoffs](advanced-examples.md) for detailed explanations. The demo does not call the provider or modify the database.
 
 ## Compiler and standard-library support
 
@@ -55,6 +68,7 @@ The application and test project use MSVC's latest C++ mode (`/std:c++latest`). 
 
 ## Learning principles
 
+- For every object, identify its owner, any borrowers, and the point at which its lifetime ends.
 - Prefer one clear owner (`std::unique_ptr`) for network handles. Use shared ownership only when several components genuinely share lifetime responsibility.
 - Understand the lifetime of every non-owning view (`string_view`, `span`, ranges views, `mdspan`).
 - Prefer standard algorithms and value types before adding frameworks or concurrency.
@@ -63,7 +77,8 @@ The application and test project use MSVC's latest C++ mode (`/std:c++latest`). 
 
 ## Suggested capstone sequence
 
-1. Add a tested `optional`/`expected` parser exercise without changing the production error contract.
-2. Reimplement a statistics calculation with a ranges pipeline and compare readability and lifetime constraints with the existing loop.
-3. Explore a bounded background task using `jthread` while keeping provider pacing serialized.
-4. Design, but do not assume library support for, an asynchronous sender/receiver quote pipeline.
+1. Write a small `StockPrice`-like class that keeps its invariant valid and test accepted and rejected construction values.
+2. Add a tested `optional`/`expected` parser exercise without changing the production error contract.
+3. Reimplement a statistics calculation with a ranges pipeline and compare readability and lifetime constraints with the existing loop.
+4. Explore a bounded background task using `jthread` while keeping provider pacing serialized.
+5. Design, but do not assume library support for, an asynchronous sender/receiver quote pipeline.

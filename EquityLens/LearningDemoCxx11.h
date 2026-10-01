@@ -52,6 +52,8 @@ namespace EquityLensLearning
 	inline void demonstrateCpp11(std::ostream& output)
 	{
 		const auto& prices = samplePrices();
+		const PriceSample& firstSample = prices.front();
+		const PriceSample* borrowedSample = &firstSample;
 		long long totalVolume = 0;
 		for (const auto& sample : prices)
 		{
@@ -103,6 +105,7 @@ namespace EquityLensLearning
 
 		writeChapterHeading(output, "C++11", "Ownership, lambdas, constexpr, algorithms, and concurrency");
 		writeMetric(output, "Unique ownership transfer", !exclusive && transferred ? "transferred" : "not transferred");
+		writeMetric(output, "Borrowed reference / pointer", borrowedSample->symbol + " / non-owning");
 		writeMetric(output, "Shared owners / null pointer", std::to_string(shared.use_count()) + " / " +
 			(missingSample == nullptr ? "yes" : "no"));
 		writeMetric(output, "Up days: algorithm / thread / async", std::to_string(upDays) + " / " +
