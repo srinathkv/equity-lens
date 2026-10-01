@@ -8,7 +8,9 @@ This lesson is for learners new to C++ or returning after a long break. It intro
 - The EquityLens repository and its configured dependencies for building the full application.
 - A terminal or IDE build/run command. Start with a small standalone file before exploring the full application.
 
-In Visual Studio, open the solution, select the `x64` platform and `Debug` configuration, then build and run. To try an individual standard example, create a small console project and select the matching language standard. `/std:c++latest` means the newest mode provided by the installed compiler; it does not guarantee support for every recent standard feature.
+For standalone examples, open **Developer PowerShell for Visual Studio 2026** so the MSVC compiler is on `PATH`. MSVC has no separate `/std:c++11` switch; `/std:c++14` accepts the C++11 features used in these introductory examples. Later lessons can use `/std:c++17`, `/std:c++20`, or `/std:c++latest`. The latest mode does not guarantee support for every recent standard feature.
+
+To build the full application, open `EquityLens.slnx` in Visual Studio, select the `x64` platform and `Debug` configuration, then choose **Build > Build Solution** or press **Ctrl+Shift+B**. The project uses the repository vcpkg manifest; allow Visual Studio to restore configured dependencies on the first build.
 
 ## First program
 
@@ -179,14 +181,41 @@ This is a focused fragment; use it inside a program with `<stdexcept>`. Catch an
 
 External data needs validation even when it has been parsed into a C++ type. For example, a `double` can still be NaN or infinite, and a string can still name an invalid ticker. Validate at the boundary before storing or calculating with the data.
 
+## Runnable practice: prices and self-checks
+
+Before reading the reference implementation, write two functions in a new C++ file:
+
+1. `dailyChange(openingPrice, closingPrice)` returns closing price minus opening price.
+2. `countClosesAbove(closes, threshold)` counts values strictly greater than the threshold; an empty vector returns zero.
+
+Test positive and negative daily change, values above and exactly on a threshold, and an empty vector. Compare your work with the complete [C++11 exercise and self-checks](exercises/getting-started.cpp). Its assertions cover those cases and print `All 5 checks passed.` on success. Assertions stop at the first failed check; build without `NDEBUG` so they remain enabled.
+
+After the checks pass, change sample prices, add a test for your new case, and predict the result before running it. The exercise uses fixed data and does not access the provider or database.
+
 ## Build, run, and learn
 
-1. Compile and run the `hello.cpp` complete example.
-2. Change the price values and observe the output; then intentionally introduce a syntax or type error and read the compiler diagnostic.
-3. Build the EquityLens solution in Visual Studio. The project uses the latest supported MSVC language mode and configured vcpkg dependencies.
-4. Run `EquityLens.exe --help` to see application commands.
-5. Run `EquityLens.exe learn` for offline C++11–C++26 samples. This command uses fixed data and does not require an API key or modify the database.
-6. Continue with [C++11 foundations](cpp11.md), then follow the standards in order.
+1. Save the `hello.cpp` complete example as `%TEMP%\hello.cpp`. In Developer PowerShell, compile and run it:
+
+   ```powershell
+   Set-Location $env:TEMP
+   cl /nologo /std:c++14 /EHsc /W4 /Fe:hello.exe hello.cpp
+   .\hello.exe
+   ```
+
+   Output includes `Hello, C++ learner!` and `Sample symbol: AAPL`.
+2. From the repository root, compile and run the assertion-based lab in the temporary directory:
+
+   ```powershell
+   cl /nologo /std:c++14 /EHsc /W4 /Fe:"$env:TEMP\getting-started.exe" docs\learning\exercises\getting-started.cpp
+   & "$env:TEMP\getting-started.exe"
+   ```
+
+   A successful run prints `All 5 checks passed.` These commands do not define `NDEBUG`, so assertions remain enabled.
+3. Change the price values and observe the output; then intentionally introduce a syntax or type error and read the compiler diagnostic.
+4. Build the EquityLens solution in Visual Studio as described above.
+5. Run `EquityLens.exe --help` to see application commands.
+6. Run `EquityLens.exe learn` for offline C++11–C++26 samples. This command uses fixed data and does not require an API key or modify the database.
+7. Continue with [C++11 foundations](cpp11.md), then follow the standards in order.
 
 When a build fails, start with the first compiler error, confirm the selected source file and language mode, and make one change at a time. A successful compilation only proves the compiler accepted the program; run it and test ordinary, boundary, and invalid-input cases too.
 

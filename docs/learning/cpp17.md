@@ -62,17 +62,17 @@ Filesystem paths are safer and more portable than hand-concatenated path strings
 
 Other additions include `std::string_view` (a non-owning view whose source must remain alive), `std::from_chars`/`std::to_chars` (locale-independent conversion), `std::clamp`, node handles for associative containers, `std::shared_mutex`, and parallel algorithm execution policies.
 
-## EquityLens connection
-
-`latestPrice` uses `std::optional<StockPrice>` to distinguish no row from a fabricated zero quote. The `from_chars` result has both an end pointer and an error code, named through structured binding. Test helpers can use `std::filesystem` paths.
-
 ## Practice
 
-1. Check `latestPrice` on a new database and after inserting a price. Explain why `optional` is clearer than a sentinel quote.
+1. Parse a local optional quote and distinguish no value from a fabricated zero quote.
 2. Create a `variant<double, std::string>` and visit both alternatives.
 3. Parse a numeric string with `from_chars`, rejecting errors and partial parses.
 4. Pass a `string_view` to a parser and explain how the caller guarantees the source outlives the view.
 5. Mark an exercise function `[[nodiscard]]` and observe the compiler diagnostic when its result is ignored.
+
+## Optional follow-up: EquityLens connection
+
+After completing the standalone practice, inspect how `latestPrice` uses `std::optional<StockPrice>` to distinguish no database row from a fabricated zero quote. The application's `from_chars` result uses structured bindings for its end pointer and error code; test helpers use `std::filesystem` paths.
 
 ## Common pitfalls
 

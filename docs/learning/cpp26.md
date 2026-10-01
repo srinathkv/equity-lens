@@ -39,20 +39,18 @@ The `learn` command demonstrates this container when the standard library advert
 
 `std::execution` in this lesson refers to the C++26 sender/receiver facility, not the existing C++17 execution-policy overloads for parallel algorithms. The latter are demonstrated in the C++17 chapter and do not imply sender/receiver support.
 
-## EquityLens connection
-
-A future EquityLens asynchronous pipeline could benefit from composable execution: a request operation, a parsing continuation, and a persistence step could expose their completion and error channels explicitly. This requires an implementation of the relevant execution facilities and an HTTP adapter. It does not remove Alpha Vantage's rate limit, and cancellation and ownership still need careful design.
-
-Reflection could eventually help generate repetitive reporting or serialization support, but a small explicit `StockPrice` serializer is preferable until reflection syntax and toolchain support are stable.
-
 ## Practice
 
 1. Find the C++26 feature-status page for your compiler and record which features in this lesson are implemented.
 2. Inspect the standard-library feature-test macros available in the selected toolchain.
-3. Sketch an EquityLens quote-fetch pipeline with separate request, parse, and store completion/error cases. Identify where rate limiting and cancellation belong.
-4. Compare an explicit `StockPrice` formatter with a hypothetical reflection-based formatter; list the simplicity and support tradeoffs.
+3. Sketch an offline pipeline with separate input, parse, and result completion/error cases. Identify where cancellation would belong.
+4. Compare an explicit quote formatter with a hypothetical reflection-based formatter; list the simplicity and support tradeoffs.
 5. Compile a small test under the compiler's C++26/latest mode only when the specific feature is documented as supported.
 6. Compare `std::inplace_vector` with `std::vector` for a bounded batch of price observations; discuss capacity failure and object size. Check the standard-library feature-test macro rather than relying on compiler-version checks.
+
+## Optional follow-up: EquityLens connection
+
+After completing the standalone practice, sketch how a future application pipeline might compose request, parse, and persistence steps. This requires supported execution facilities and an HTTP adapter; it does not remove provider rate limits, cancellation, or ownership concerns. Reflection might eventually generate repetitive reporting, but an explicit formatter remains preferable until support and syntax are stable.
 
 ## Common pitfalls
 

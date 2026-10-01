@@ -61,17 +61,17 @@ Whether a call is evaluated at compile time depends on its arguments and context
 - `std::exchange` replaces an object value and returns its previous value; useful in move operations.
 - Chrono duration literals provide readable duration values.
 
-## EquityLens connection
-
-Generic lambdas can adapt quote-like records for a reusable algorithm, but for a one-off `StockPrice` operation, the typed C++11 lambda may be clearer. The goal is to remove incidental syntax, not to make every operation generic.
-
 ## Practice
 
-1. Write generic lambdas for close price and volume; call them with `StockPrice`.
+1. Write generic lambdas for close price and volume; call them with your local quote type.
 2. Capture a vector by move in a lambda, then explain which object owns it.
 3. Write a `constexpr` function that converts a percentage to basis points and test it with `static_assert`.
 4. Use a variable template for a compile-time column count and decide whether it helps a real feature.
 5. Replace a direct `unique_ptr(new T(...))` exercise with `std::make_unique`.
+
+## Optional follow-up: EquityLens connection
+
+After completing the standalone practice, compare a generic lambda with a typed lambda for a quote projection in the application. For a one-off `StockPrice` operation, the typed C++11 lambda may be clearer; the goal is to remove incidental syntax, not to make every operation generic.
 
 ## Common pitfalls
 

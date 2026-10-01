@@ -27,14 +27,14 @@ Complete [Getting Started](getting-started.md) first if you have not written, co
 
 ## Six-week syllabus
 
-Each week combines the linked language lesson with one small, tested EquityLens exercise. Keep experiments isolated from production unless a feature improves correctness or the design.
+Each week starts with standalone practice and tests from the [Progressive Offline Quote Analyzer](quote-analyzer-project.md). Compare with application code only after those checks pass.
 
-1. **C++11 foundations — ownership and API lifetimes.** Trace RAII for WinHTTP and SQLite resources; practice move semantics, typed lambdas, and safe response ownership. Deliverable: a small resource-lifetime exercise with tests.
-2. **C++14 and C++17 — generic code and data representation.** Compare generic and typed lambdas, use `make_unique`, and practice `optional`, `variant`, structured bindings, and filesystem. Deliverable: parsing and persistence exercises for missing or invalid quote data.
-3. **C++20 — constrained analysis pipelines.** Use concepts and ranges for numerical operations. Exercise the production SMA(14), Wilder RSI(14), and 20-day Bollinger Bands (two population standard deviations) with `EquityLens.exe indicators SYMBOL`; compare a ranges pipeline with a simple loop and the demo's `latch` handoff. Results align with dates and use empty warm-up values.
-4. **C++23 — explicit errors and data views.** Prototype an `expected`-returning parser, use `mdspan` over owned dense OHLC data, and try a move-only callable when supported. Keep SQLite as the persistence source of truth and document the view's backing-storage lifetime.
-5. **Resilience and presentation — safe application behavior.** `history SYMBOL` loads saved data; then `chart SYMBOL` renders ASCII candles and `export SYMBOL FILE.csv` writes OHLCV data. Provider requests retain 1.1-second pacing and retry selected transient failures at most twice; quota errors are not retried. Explore bounded background work separately, without bypassing provider pacing. Treat coroutine-based networking as a separate design task: coroutines alone do not make synchronous I/O asynchronous.
-6. **C++26 — support-aware exploration.** Check the current standardization and compiler/library status before trying a facility. Distinguish facilities adopted for C++26 from proposals or features still in progress; do not treat syntax from older proposals as standard syntax. Document fallbacks and tests.
+1. **C++11 foundations — values and lifetimes.** First test value ownership, typed lambdas, moves, and synchronization with fixed local data. Then optionally trace RAII for WinHTTP and SQLite resources in the application.
+2. **C++14 and C++17 — generic code and parsing.** First compare generic and typed lambdas, then parse `SYMBOL,CLOSE` records and test `optional`, `variant`, structured bindings, and `from_chars`. After those checks pass, optionally compare the parser with the application's `latestPrice` behavior.
+3. **C++20 — constrained analysis pipelines.** First test SMA, Wilder RSI, and 20-day Bollinger Bands (two population standard deviations) on fixed data; compare a ranges pipeline with a simple loop and study the demo's `latch` handoff. Then optionally compare results with `EquityLens.exe indicators SYMBOL`; results align with dates and use empty warm-up values.
+4. **C++23 — explicit errors and data views.** First prototype an `expected`-returning parser and use `mdspan` over owned dense OHLC data; document view lifetimes. Then optionally compare the design with application parsing and storage, keeping SQLite as the persistence source of truth.
+5. **Resilience and presentation — safe application behavior.** After completing local tests, explore existing commands against saved data: `history SYMBOL`, `chart SYMBOL`, and `export SYMBOL FILE.csv`. Provider requests retain 1.1-second pacing and retry selected transient failures at most twice; quota errors are not retried. Treat bounded background work and coroutine networking as separate design studies; coroutines alone do not make synchronous I/O asynchronous.
+6. **C++26 — support-aware exploration.** Check the current standardization and compiler/library status before trying a facility. Distinguish adopted facilities from proposals still in progress, then optionally compare the support findings with application design. Record fallbacks and tests; never treat syntax from older proposals as standard syntax.
 
 ## Feature map
 
@@ -77,8 +77,4 @@ The application and test project use MSVC's latest C++ mode (`/std:c++latest`). 
 
 ## Suggested capstone sequence
 
-1. Write a small `StockPrice`-like class that keeps its invariant valid and test accepted and rejected construction values.
-2. Add a tested `optional`/`expected` parser exercise without changing the production error contract.
-3. Reimplement a statistics calculation with a ranges pipeline and compare readability and lifetime constraints with the existing loop.
-4. Explore a bounded background task using `jthread` while keeping provider pacing serialized.
-5. Design, but do not assume library support for, an asynchronous sender/receiver quote pipeline.
+Follow the linked [Progressive Offline Quote Analyzer](quote-analyzer-project.md) milestones from beginner functions and containers through support-aware C++26 exploration. After completing the standalone stages, use the existing EquityLens code as an optional comparison and adapt an idea to production only when it improves a real design and has appropriate tests.

@@ -88,10 +88,6 @@ The chapter's first latch example deliberately keeps the worker synchronization 
 
 Coroutines provide language machinery for suspendable functions. They require an awaitable type, a promise/return type, and a scheduler or asynchronous I/O operation. The standard does not provide a general-purpose `task` type or HTTP event loop. EquityLens currently uses synchronous WinHTTP, so adding `co_await` alone would not make the network operation asynchronous.
 
-## EquityLens connection
-
-EquityLens provides simple moving average, Wilder RSI, and Bollinger-band calculations over chronologically ordered `StockPrice` records. The CLI displays SMA(14), RSI(14), and 20-day bands at two population standard deviations; each function aligns its optional results to input observations and leaves warm-up entries empty. A ranges view can describe daily gains without an intermediate container, though a simple loop may be easier to debug. `jthread` can manage a bounded background operation, but it must not bypass the API client's pacing. Coroutines alone do not make synchronous WinHTTP asynchronous.
-
 ## Practice
 
 1. Constrain a numeric average template with a concept and show a type that should not compile.
@@ -100,6 +96,10 @@ EquityLens provides simple moving average, Wilder RSI, and Bollinger-band calcul
 4. Write a stoppable `jthread` that checks its stop token; test its join-on-destruction behavior.
 5. Describe the awaitable, promise type, and scheduler needed before an async quote coroutine is useful.
 6. Build a small module and inspect the build-system configuration it requires.
+
+## Optional follow-up: EquityLens connection
+
+After completing the standalone practice, compare your local analysis with EquityLens's SMA, Wilder RSI, and Bollinger-band calculations over chronologically ordered `StockPrice` records. The CLI's SMA(14), RSI(14), and 20-day bands align optional results to observations and leave warm-up entries empty. If exploring background work, preserve the API client's pacing; coroutines alone do not make synchronous WinHTTP asynchronous.
 
 ## Common pitfalls
 

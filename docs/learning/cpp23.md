@@ -79,10 +79,6 @@ task();
 
 The referenced stream must outlive invocation. The offline chapter checks `__cpp_lib_move_only_function` before compiling this example and otherwise prints a support note.
 
-## EquityLens connection
-
-`expected` could model parser errors explicitly beside the app's exception-based boundaries. `mdspan` can view dense indicator storage without owning it, but does not replace normalized SQLite storage. Use range adaptors only when their pipeline is clearer than a loop.
-
 ## Version note and practice
 
 `std::jthread` was introduced in C++20, even though it is useful in a C++23 application.
@@ -90,8 +86,12 @@ The referenced stream must outlive invocation. The offline chapter checks `__cpp
 1. Implement an `expected`-returning close parser; test valid, empty, invalid, and trailing-character inputs.
 2. Try `views::enumerate` or `views::zip` when supported and provide an equivalent loop.
 3. Build an `mdspan` over synthetic OHLC values and document its owner and storage layout.
-4. Compare exceptions and `expected` for invalid provider data and state which errors are routine input failures.
+4. Compare exceptions and `expected` for malformed local records and state which errors are routine input failures.
 5. Check the library feature-test macro before using a C++23 library facility.
+
+## Optional follow-up: EquityLens connection
+
+After completing the standalone practice, consider whether `expected` would clarify a parser error contract alongside the application's exception-based boundaries. `mdspan` can view dense indicator storage without owning it, but does not replace normalized SQLite storage. Use range adaptors only when their pipeline is clearer than a loop.
 
 ## Common pitfalls
 
