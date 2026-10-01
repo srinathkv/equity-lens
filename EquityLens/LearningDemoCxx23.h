@@ -7,8 +7,10 @@
 #include <cmath>
 #include <cstdint>
 #include <expected>
+#include <functional>
 #include <iomanip>
 #include <iostream>
+#include <memory>
 #include <numeric>
 #include <ranges>
 #include <string>
@@ -38,6 +40,10 @@
 
 #if defined(__cpp_lib_expected) && __cpp_lib_expected >= 202211L
 #define EQUITYLENS_HAS_EXPECTED_MONADIC 1
+#endif
+
+#if defined(__cpp_lib_move_only_function) && __cpp_lib_move_only_function >= 202110L
+#define EQUITYLENS_HAS_MOVE_ONLY_FUNCTION 1
 #endif
 
 namespace EquityLensLearning
@@ -199,6 +205,14 @@ namespace EquityLensLearning
 		std::println("  std::print close: {:.2f}", *close);
 #else
 		writeNote(output, "std::print skipped: __cpp_lib_print >= 202207L unavailable.");
+#endif
+#if defined(EQUITYLENS_HAS_MOVE_ONLY_FUNCTION)
+		std::move_only_function<void()> ownedTask = [owned = std::make_unique<int>(23), &output] {
+			writeMetric(output, "move_only_function owned value", *owned);
+		};
+		ownedTask();
+#else
+		writeNote(output, "std::move_only_function skipped: __cpp_lib_move_only_function >= 202110L unavailable.");
 #endif
 		writeNote(output, "Other C++23 facilities are indexed in the feature catalog.");
 	}

@@ -1,6 +1,6 @@
 # C++23: Explicit Results, Ranges, and Library Growth
 
-The EquityLens application is compiled as C++23. C++23 adds library types that can improve error contracts and represent views over existing storage. Availability varies by compiler and standard-library version, so verify support before relying on a feature in a product build.
+The application uses MSVC's latest supported language mode. C++23 adds library types that can improve error contracts and represent views over existing storage. Availability varies by compiler and standard-library version, so verify support before relying on a feature in a product build.
 
 ## Language features
 
@@ -12,9 +12,16 @@ The EquityLens application is compiled as C++23. C++23 adds library types that c
 
 ## `std::expected`
 
-`std::expected<Value, Error>` returns either a value or an error as data. This is an alternative to exceptions for operations where callers are expected to inspect failure:
+`std::expected<Value, Error>` returns either a value or an error as data. The complete program below is C++23 and shows an alternative to exceptions when callers are expected to inspect failure:
 
 ```cpp
+#include <charconv>
+#include <expected>
+#include <iostream>
+#include <string>
+#include <string_view>
+#include <system_error>
+
 std::expected<double, std::string> parseClose(std::string_view text) {
 	double close = 0;
 	const auto [end, error] = std::from_chars(
@@ -24,9 +31,18 @@ std::expected<double, std::string> parseClose(std::string_view text) {
 	}
 	return close;
 }
+
+int main() {
+	const auto result = parseClose("193.50");
+	if (result) {
+		std::cout << "Close: " << *result << '\n';
+	} else {
+		std::cerr << "Error: " << result.error() << '\n';
+	}
+}
 ```
 
-This example needs `<expected>`, `<charconv>`, `<string>`, `<string_view>`, and `<system_error>`. EquityLens currently uses exceptions at API and storage boundaries; converting the entire program is a separate design decision, not a mechanical replacement.
+EquityLens currently uses exceptions at API and storage boundaries; converting the entire program is a separate design decision, not a mechanical replacement.
 
 ## `std::mdspan`
 
@@ -49,6 +65,19 @@ This needs `<mdspan>`, `<cstddef>`, and `<vector>`. A normalized SQLite table is
 - `std::stacktrace`, `std::to_underlying`, `std::byteswap`, `std::unreachable`, and `std::invoke_r` add useful utilities.
 - `std::optional` gains monadic operations; `std::string_view` gains `contains`; `std::basic_string` gains `resize_and_overwrite`.
 - Extended floating-point, ranges, and other library facilities may be implemented at different times by each toolchain.
+
+### `std::move_only_function`
+
+`std::move_only_function` type-erases a callable without requiring the callable itself to be copyable. The following C++23 fragment owns a `unique_ptr` inside its closure; it requires `<functional>` and `<memory>` and runs in a function that has an output stream:
+
+```cpp
+std::move_only_function<void()> task = [value = std::make_unique<int>(23), &output] {
+	output << *value << '\n';
+};
+task();
+```
+
+The referenced stream must outlive invocation. The offline chapter checks `__cpp_lib_move_only_function` before compiling this example and otherwise prints a support note.
 
 ## EquityLens connection
 

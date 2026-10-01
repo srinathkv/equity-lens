@@ -12,6 +12,7 @@
 #include <cstdint>
 #include <future>
 #include <iostream>
+#include <latch>
 #include <ranges>
 #include <span>
 #include <stop_token>
@@ -104,6 +105,12 @@ namespace EquityLensLearning
 		started.get();
 		worker.request_stop();
 		worker.join();
+		std::latch completion{ 1 };
+		std::jthread latchWorker([&completion] {
+			completion.count_down();
+		});
+		completion.wait();
+		latchWorker.join();
 		std::string utcZone = "unavailable";
 #if defined(__cpp_lib_chrono) && __cpp_lib_chrono >= 201907L
 		try
@@ -133,6 +140,7 @@ namespace EquityLensLearning
 		writeMetric(output, "UTC time zone", utcZone);
 		writeMetric(output, "consteval window", validatedWindow(14));
 		writeMetric(output, "jthread synchronized count", completed.load(std::memory_order_relaxed));
+		writeMetric(output, "Latch completion", "released");
 		writeNote(output, "Modules need a separate module interface and build setup.");
 		writeNote(output, "Coroutines are language machinery; see the C++23 generator and feature catalog.");
 	}

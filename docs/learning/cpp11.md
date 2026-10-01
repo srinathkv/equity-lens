@@ -37,6 +37,30 @@ This lambda is an ordinary C++11 lambda with explicitly typed parameters. The ap
 - Defaulted/deleted functions, delegating/inherited constructors, and `override`/`final` express type and virtual-function intent.
 - Lambdas support captures; reference captures require the referenced objects to outlive the closure.
 
+### Variadic templates
+
+Variadic templates accept a compile-time pack of arguments. Before fold expressions were added in C++17, a recursive overload could consume one argument at a time. This complete C++11 example has a non-empty `int` pack and terminates at the single-value overload:
+
+```cpp
+#include <iostream>
+
+constexpr int sum(int value) {
+	return value;
+}
+
+template<class... Values>
+constexpr int sum(int first, Values... rest) {
+	return first + sum(rest...);
+}
+
+int main() {
+	static_assert(sum(1, 2, 3, 4) == 10, "recursive pack expansion");
+	std::cout << sum(5, 6) << '\n';
+}
+```
+
+The offline `learn` chapter includes the same pattern in `LearningDemoCxx11.h`. In production templates, constrain or otherwise document the supported argument types; recursive expansion can produce less direct diagnostics than a later fold expression.
+
 ## Standard library and concurrency
 
 C++11 added `std::array`, `std::forward_list`, unordered containers, `std::tuple`, `std::function`, `std::chrono`, `std::type_traits`, and smart pointers including `std::unique_ptr`, `std::shared_ptr`, and `std::weak_ptr`. Algorithms and utilities: `std::begin`/`std::end`, move-aware operations, `std::move`, and `std::forward`. The threading library provides `std::thread`, mutexes, lock guards, condition variables, futures/promises, and atomics. A `std::thread` must be joined or detached, and shared mutable data needs synchronization; `volatile` is not thread synchronization.

@@ -14,7 +14,7 @@ C++17 added vocabulary types and syntax that make common data-flow cases explici
 
 ## `std::optional`
 
-A latest-price query may find no row. `std::optional<StockPrice>` represents either a quote or no quote without inventing a special price value:
+A latest-price query may find no row. `std::optional<StockPrice>` represents either a quote or no quote without inventing a special price value. This fragment assumes `store`, `StockPrice`, and `<iostream>` are declared:
 
 ```cpp
 if (const auto latest = store.latestPrice("AAPL")) {
@@ -26,7 +26,7 @@ The `if` initializer and `std::optional` make the lifetime and presence check lo
 
 ## Structured bindings
 
-Parsing a number with `std::from_chars` returns both the stopping position and an error code. Structured bindings name those parts directly:
+Parsing a number with `std::from_chars` returns both the stopping position and an error code. Structured bindings name those parts directly. This fragment assumes `begin`, `finish`, and `volume` are declared and `<charconv>` is included:
 
 ```cpp
 const auto [end, error] = std::from_chars(begin, finish, volume);
@@ -38,7 +38,7 @@ Structured bindings also name the two iterator results of algorithms such as `st
 
 ## `std::variant`
 
-When an input can have one of several known types, `std::variant` represents that closed set safely:
+When an input can have one of several known types, `std::variant` represents that closed set safely. This declaration fragment requires `<string>` and `<variant>`:
 
 ```cpp
 using FieldValue = std::variant<double, std::string>;
@@ -50,7 +50,15 @@ Use it when a program genuinely needs alternatives. EquityLens's JSON library al
 
 ## `std::filesystem`
 
-The offline test runner uses `std::filesystem` to place temporary SQLite files in the operating system's temporary directory. Filesystem paths are safer and more portable than hand-concatenated path strings.
+The offline test runner uses `std::filesystem` to place temporary SQLite files in the operating system's temporary directory. This fragment requires `<filesystem>` and `<iostream>`:
+
+```cpp
+for (const auto& entry : std::filesystem::directory_iterator(".")) {
+	std::cout << entry.path().string() << '\n';
+}
+```
+
+Filesystem paths are safer and more portable than hand-concatenated path strings.
 
 Other additions include `std::string_view` (a non-owning view whose source must remain alive), `std::from_chars`/`std::to_chars` (locale-independent conversion), `std::clamp`, node handles for associative containers, `std::shared_mutex`, and parallel algorithm execution policies.
 

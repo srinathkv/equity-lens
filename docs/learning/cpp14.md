@@ -4,17 +4,19 @@ C++14 is a refinement release. It reduces template and lambda boilerplate while 
 
 ## `std::make_unique`
 
-`make_unique` constructs an object and immediately returns its sole owner. It avoids spelling `new` and prevents an unowned pointer from appearing between allocation and ownership transfer:
+`make_unique` constructs an object and immediately returns its sole owner. This C++14 fragment avoids spelling `new` and prevents an unowned pointer from appearing between allocation and ownership transfer:
 
 ```cpp
+#include <memory>
+
 auto store = std::make_unique<StockDataStore>("quotes.db");
 ```
 
-Prefer this to `std::unique_ptr<StockDataStore>(new StockDataStore(...))`. The RAII principle is still the important idea; `make_unique` makes it easier to follow consistently. Include `<memory>`.
+The fragment assumes `StockDataStore` is declared and is inside a function. Prefer this to `std::unique_ptr<StockDataStore>(new StockDataStore(...))`. The RAII principle is still the important idea; `make_unique` makes it easier to follow consistently.
 
 ## Generic lambdas and generalized captures
 
-A generic lambda uses `auto` for a parameter and is usable with different compatible types:
+A generic lambda uses `auto` for a parameter and is usable with different compatible types. This C++14 fragment is intended inside a function with `<iostream>` included:
 
 ```cpp
 auto closeOf = [](const auto& quote) {
@@ -24,7 +26,7 @@ auto closeOf = [](const auto& quote) {
 
 This can simplify small adapters when several quote-like types expose the same member. For a one-off operation on `StockPrice`, a typed C++11 lambda is often clearer.
 
-An init-capture creates a closure member from an expression. It can move an object into a lambda or give a captured value a clear name:
+An init-capture creates a closure member from an expression. It can move an object into a lambda or give a captured value a clear name. This fragment assumes `<vector>` and the `StockPrice` declaration are available:
 
 ```cpp
 auto makePrinter(std::vector<StockPrice> prices) {

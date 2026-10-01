@@ -14,6 +14,21 @@
 
 namespace EquityLensLearning
 {
+	/** @brief Recursively sums a C++11 variadic pack with a common result type. */
+	constexpr int sumPack(int value)
+	{
+		return value;
+	}
+
+	/** @brief Adds the first value and recursively expands the remaining C++11 pack. */
+	template<typename... Values>
+	constexpr int sumPack(int first, Values... rest)
+	{
+		return first + sumPack(rest...);
+	}
+
+	static_assert(sumPack(1, 2, 3, 4) == 10, "C++11 variadic templates expand recursively");
+
 	/** @brief Computes a percentage change; caller supplies a nonzero base. */
 	constexpr double percentChange(double base, double latest) noexcept
 	{
@@ -102,6 +117,7 @@ namespace EquityLensLearning
 			direction == PriceDirection::flat ? "flat" : "down";
 		writeMetric(output, "Price direction", directionLabel);
 		writeMetric(output, "Compile-time percent change", percentChange(100.0, 110.0));
+		writeMetric(output, "Variadic-template sum", sumPack(1, 2, 3, 4));
 		writeMetric(output, "Calculation is noexcept", noexcept(percentChange(1.0, 2.0)) ? "yes" : "no");
 	}
 }

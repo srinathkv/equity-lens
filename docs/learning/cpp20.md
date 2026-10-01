@@ -14,18 +14,33 @@ C++20 added concepts, ranges, coroutines, and `std::jthread`. They can clarify a
 
 ## Concepts
 
-A concept names a compile-time requirement. For a reusable average function that accepts floating-point values, constrain the template rather than allowing unrelated types to fail deep inside its implementation:
+A concept names a compile-time requirement. This complete example is compilable as C++20 and constrains a reusable average function to floating-point values rather than allowing unrelated types to fail deep inside its implementation:
 
 ```cpp
+#include <concepts>
+#include <iostream>
+#include <vector>
+
 template<std::floating_point Number>
-Number average(const std::vector<Number>& values);
+Number average(const std::vector<Number>& values) {
+	Number total{};
+	for (const Number value : values) {
+		total += value;
+	}
+	return values.empty() ? Number{} : total / static_cast<Number>(values.size());
+}
+
+int main() {
+	const std::vector<double> closes{190.0, 193.5, 200.5};
+	std::cout << average(closes) << '\n';
+}
 ```
 
-Include `<concepts>` and `<vector>`. A small, domain-specific API may still be clearer than a generic template.
+A small, domain-specific API may still be clearer than a generic template. This example returns zero for an empty range; a production API could instead make emptiness an explicit error.
 
 ## Ranges
 
-Ranges let an algorithm describe a pipeline without a temporary container. For example, select up-days before calculating another metric:
+Ranges let an algorithm describe a pipeline without a temporary container. This C++20 fragment assumes `prices` is a live range of `StockPrice` and `<ranges>` is included:
 
 ```cpp
 auto upDays = prices | std::views::filter([](const StockPrice& price) {
@@ -44,6 +59,28 @@ Ranges algorithms accept ranges directly (for example, `std::ranges::sort`). Vie
 - `<bit>` provides `std::bit_cast`, `std::endian`, and bit utilities; `std::erase`/`std::erase_if` simplify container removal.
 - `std::format`, `std::numbers`, `std::midpoint`, and calendar/time-zone additions to `<chrono>` improve formatting, numeric constants, and time handling. Library support varies by implementation.
 - Other additions include `std::bind_front`, `std::source_location`, string prefix/suffix checks, associative-container `contains`, and `std::erase`/`std::erase_if`.
+
+### Coordinating with `std::latch`
+
+A latch is a one-shot countdown used when one or more workers must signal that a phase is complete. This complete example releases the waiting main thread after the worker counts down:
+
+```cpp
+#include <latch>
+#include <thread>
+
+int main() {
+	std::latch ready{1};
+	std::jthread worker([&ready] {
+		// Perform one phase of work.
+		ready.count_down();
+	});
+	ready.wait();
+}
+```
+
+`std::jthread` joins at scope exit. A latch is not reusable; use a `std::barrier` for repeated phases. The C++20 `learn` chapter also performs a latch handoff and reports when the waiter is released.
+
+The chapter's first latch example deliberately keeps the worker synchronization explicit. In a real application, ensure the worker cannot outlive objects it references and prefer RAII-managed joining when early returns or exceptions are possible.
 
 ## `std::jthread` and coroutines
 

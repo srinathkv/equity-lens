@@ -1,6 +1,6 @@
 # Modern C++ Reference and Learning Path
 
-This curriculum is a comprehensive, example-driven tour of major C++ language and standard-library features from C++11 through C++26. It focuses on the core language and standard library, with practical examples connected to EquityLens. It is a learning reference, not a complete replacement for the standard wording or a catalog of every defect report and minor library change.
+This curriculum is an example-driven tour of selected major C++ language and standard-library features from C++11 through C++26. It focuses on the core language and standard library, with practical examples connected to EquityLens. It is not an exhaustive reference or a replacement for the standard wording, feature-status tables, defect reports, or implementation documentation.
 
 ## Lesson order
 
@@ -11,6 +11,7 @@ This curriculum is a comprehensive, example-driven tour of major C++ language an
 5. [C++23: Library expansion](cpp23.md) — `expected`, `mdspan`, modern ranges, formatting, and newer language syntax.
 6. [C++26: The next standard](cpp26.md) — evolving language and library facilities, execution, reflection/contracts directions, and support status.
 7. [Feature catalog](feature-catalog.md) — crosswalk from every topic named in these lessons to a chapter, conditional example, or support/design note.
+8. [Advanced examples: concepts and tradeoffs](advanced-examples.md) — detailed walkthrough of ownership, concurrency, constraints, views, errors, and support-sensitive features in `learn`.
 
 ## Six-week syllabus
 
@@ -18,10 +19,10 @@ Each week combines the linked language lesson with one small, tested EquityLens 
 
 1. **C++11 foundations — ownership and API lifetimes.** Trace RAII for WinHTTP and SQLite resources; practice move semantics, typed lambdas, and safe response ownership. Deliverable: a small resource-lifetime exercise with tests.
 2. **C++14 and C++17 — generic code and data representation.** Compare generic and typed lambdas, use `make_unique`, and practice `optional`, `variant`, structured bindings, and filesystem. Deliverable: parsing and persistence exercises for missing or invalid quote data.
-3. **C++20 — constrained analysis pipelines.** Use concepts and ranges for numerical operations. Exercise the production SMA(14), Wilder RSI(14), and 20-day Bollinger Bands (two population standard deviations) with `EquityLens.exe indicators SYMBOL`; compare a ranges pipeline with a simple loop. Results align with dates and use empty warm-up values.
-4. **C++23 — explicit errors and data views.** Prototype an `expected`-returning parser and use `mdspan` over owned, dense OHLC data. Keep SQLite as the persistence source of truth and document the view's backing-storage lifetime.
+3. **C++20 — constrained analysis pipelines.** Use concepts and ranges for numerical operations. Exercise the production SMA(14), Wilder RSI(14), and 20-day Bollinger Bands (two population standard deviations) with `EquityLens.exe indicators SYMBOL`; compare a ranges pipeline with a simple loop and the demo's `latch` handoff. Results align with dates and use empty warm-up values.
+4. **C++23 — explicit errors and data views.** Prototype an `expected`-returning parser, use `mdspan` over owned dense OHLC data, and try a move-only callable when supported. Keep SQLite as the persistence source of truth and document the view's backing-storage lifetime.
 5. **Resilience and presentation — safe application behavior.** `history SYMBOL` loads saved data; then `chart SYMBOL` renders ASCII candles and `export SYMBOL FILE.csv` writes OHLCV data. Provider requests retain 1.1-second pacing and retry selected transient failures at most twice; quota errors are not retried. Explore bounded background work separately, without bypassing provider pacing. Treat coroutine-based networking as a separate design task: coroutines alone do not make synchronous I/O asynchronous.
-6. **C++26 — support-aware exploration.** Check compiler and standard-library feature status before trying new facilities. Keep reflection, contracts, pattern matching, and other evolving ideas labeled as experimental or hypothetical until their standardization and implementation status is verified; document fallbacks and tests.
+6. **C++26 — support-aware exploration.** Check the current standardization and compiler/library status before trying a facility. Distinguish facilities adopted for C++26 from proposals or features still in progress; do not treat syntax from older proposals as standard syntax. Document fallbacks and tests.
 
 ## Feature map
 
@@ -39,17 +40,18 @@ Each week combines the linked language lesson with one small, tested EquityLens 
 ## How to use the lessons
 
 1. Read the lesson in sequence; later features build on earlier value, lifetime, and type-system concepts.
-2. Compile examples independently in the matching language mode, adding their listed headers and types. Some snippets are illustrative and require small surrounding declarations.
+2. Compile examples independently in the matching language mode. Each lesson labels whether a snippet is a complete program or a focused fragment; fragments require the stated surrounding declarations and headers.
 3. Complete the practice items, including the design and lifetime questions—not only the syntax tasks.
 4. Run `EquityLens.exe learn` for a short offline demonstration; it does not call the provider or modify the database. Use features in production only when they improve the interface or correctness.
 5. Use the [feature catalog](feature-catalog.md) to find each concept's chapter treatment and support constraints.
-6. Use compiler diagnostics and tests to verify examples on your own toolchain.
+6. Read [Advanced examples: concepts and tradeoffs](advanced-examples.md) to understand the chapter implementations, lifetimes, error paths, and concurrency choices.
+7. Use compiler diagnostics and tests to verify examples on your own toolchain.
 
-Run `EquityLens.exe learn` for an offline, six-chapter field guide through C++11, C++14, C++17, C++20, C++23, and C++26. The chapters cover ownership, compile-time tools, concurrency, vocabulary types, ranges, error results, and feature-gated library additions. See the [feature catalog](feature-catalog.md) for the coverage crosswalk and each lesson for explanations, tradeoffs, and exercises. The demo does not call the provider or modify the database.
+Run `EquityLens.exe learn` for an offline, six-chapter advanced field guide through C++11, C++14, C++17, C++20, C++23, and C++26. The chapters combine ownership-safe ingestion, concurrent aggregation, a variadic-template example, generic transformations, vocabulary-type error handling, constrained/ranges analytics, latch synchronization, and feature-gated move-only callable, multidimensional, and bounded-storage examples. Use the [feature catalog](feature-catalog.md) for the crosswalk and [Advanced examples: concepts and tradeoffs](advanced-examples.md) for detailed explanations. The demo does not call the provider or modify the database.
 
 ## Compiler and standard-library support
 
-The application and test project use MSVC's latest C++ working-draft mode (`/std:c++latest`) to target C++26. A language mode switch does not guarantee that every library feature is implemented. Support can differ between the compiler front end and its standard library. Check the compiler vendor's feature-status documentation and library feature-test macros before adopting a facility; treat draft or evolving facilities accordingly.
+The application and test project use MSVC's latest C++ mode (`/std:c++latest`). This selects the newest mode supported by that compiler, not a guarantee that every C++26 language or library facility is implemented. Support can differ between the compiler front end and its standard library. Check current feature-status documentation and library feature-test macros before adopting a facility; label proposals and evolving facilities accordingly.
 
 ## Learning principles
 
