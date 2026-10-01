@@ -11,8 +11,11 @@ This curriculum is an example-driven tour of selected major C++ language and sta
 5. [C++20: Constraints and ranges](cpp20.md) — concepts, modules, coroutines, ranges, views, and managed concurrency.
 6. [C++23: Library expansion](cpp23.md) — `expected`, `mdspan`, modern ranges, formatting, and newer language syntax.
 7. [C++26: The next standard](cpp26.md) — evolving language and library facilities, execution, reflection/contracts directions, and support status.
-8. [Feature catalog](feature-catalog.md) — crosswalk from every topic named in these lessons to a chapter, conditional example, or support/design note.
-9. [Advanced examples: concepts and tradeoffs](advanced-examples.md) — detailed walkthrough of ownership, concurrency, constraints, views, errors, and support-sensitive features in `learn`.
+8. [Advanced design topics](advanced-design.md) — runtime polymorphism, operator design, PMR allocation, and release/acquire synchronization, with a C++17 lab.
+9. [Advanced modern C++ labs](advanced-labs/README.md) — focused, tested exercises for exception safety, template selection, coroutines, modules, synchronization, and support-sensitive features.
+10. [Modern C++ interview questions](interview-questions.md) — 200 questions and answers on ownership, templates, errors, library design, concurrency, and modern facilities.
+11. [Feature catalog](feature-catalog.md) — coverage ledger from major topic areas to demos, lessons/labs, and support/design notes.
+12. [Advanced examples: concepts and tradeoffs](advanced-examples.md) — detailed walkthrough of ownership, concurrency, constraints, views, errors, and support-sensitive features in `learn`.
 
 ### Beginner entry path
 
@@ -43,6 +46,8 @@ Each week starts with standalone practice and tests from the [Progressive Offlin
 | Ownership, borrowing, lifetime, move semantics | [Getting started](getting-started.md) | [C++11](cpp11.md), [C++14](cpp14.md), [C++20](cpp20.md) |
 | Type inference, lambdas, templates | [C++11](cpp11.md) | [C++14](cpp14.md), [C++17](cpp17.md), [C++20](cpp20.md) |
 | Value/error representation | [C++17](cpp17.md) | [C++23](cpp23.md) |
+| Polymorphism, operator design, allocation, and memory ordering | [Advanced design topics](advanced-design.md) | [C++11](cpp11.md), [C++17](advanced-design.md), [C++20](cpp20.md) |
+| Exception guarantees, template selection, modules, and coroutines | [Advanced modern C++ labs](advanced-labs/README.md) | [C++11 templates](advanced-labs/cpp11-templates.md), [C++11 exception safety](advanced-labs/cpp11-exception-safety.md), [C++20 coroutine](advanced-labs/cpp20-coroutine.md), [C++20 modules](advanced-labs/modules/README.md) |
 | Algorithms and ranges | [C++11](cpp11.md) | [C++17](cpp17.md), [C++20](cpp20.md), [C++23](cpp23.md) |
 | Files, text, and numeric conversion | [C++17](cpp17.md) | [C++20](cpp20.md), [C++23](cpp23.md) |
 | Threads and asynchronous design | [C++11](cpp11.md) | [C++20](cpp20.md), [C++26](cpp26.md) |

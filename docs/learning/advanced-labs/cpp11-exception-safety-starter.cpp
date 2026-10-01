@@ -1,7 +1,22 @@
 #include "../exercises/LabChecks.h"
 
 #include <stdexcept>
+#include <type_traits>
 #include <vector>
+
+namespace {
+class TrackedResource {
+public:
+	explicit TrackedResource(int& destructions) : destructions_(destructions) {}
+	~TrackedResource() noexcept { static_cast<void>(destructions_); }
+
+private:
+	int& destructions_;
+};
+
+static_assert(std::is_nothrow_destructible<TrackedResource>::value,
+	"cleanup must not throw during stack unwinding");
+}
 
 /** @brief Replaces prices only if all candidate values are positive. */
 void replacePrices(std::vector<double>& prices, const std::vector<double>& candidate) {
@@ -11,7 +26,9 @@ void replacePrices(std::vector<double>& prices, const std::vector<double>& candi
 
 /** @brief Demonstrates RAII cleanup during exception unwinding. */
 void throwAfterResourceAcquisition(int& destructions) {
-	(void)destructions;
+	TrackedResource resource(destructions);
+	static_cast<void>(resource);
+	throw std::runtime_error("demonstration failure");
 }
 
 int main() {

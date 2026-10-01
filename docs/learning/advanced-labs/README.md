@@ -44,11 +44,12 @@ Worked explanations live beside each pair: `cpp11-templates.md`, `cpp11-polymorp
 ## Worked concepts
 
 - **Publication:** `cpp11-publication.cpp` pairs a non-atomic payload with an atomic release/acquire flag. The synchronizes-with edge makes the preceding payload write visible after the acquire observes the release. The condition-variable example always waits on a predicate under the same mutex, preventing lost/spurious wakeups from becoming incorrect state transitions.
-- **Exception safety:** `cpp11-exception-safety.cpp` validates a separate candidate before swapping it into live state. A rejected update leaves the old collection unchanged (strong guarantee); a `unique_ptr` releases its resource while an exception unwinds.
+- **Exception safety:** `cpp11-exception-safety.cpp` validates a separate candidate before swapping it into live state. A rejected update leaves the old collection unchanged (strong guarantee); RAII performs no-throw cleanup while an exception unwinds. The lesson distinguishes the no-throw, strong, and basic guarantees.
+- **Template selection:** `cpp11-templates.cpp` demonstrates class-template partial specialization, non-template preference when conversion ranks tie, a generic template selected for a better conversion, and partial ordering between pointer and general function-template overloads.
 - **Filesystem and streams:** `cpp17-filesystem.cpp` owns its paths, checks open/write/read outcomes, uses a deterministic temporary filename, and removes the artifact after testing.
 - **Coroutines:** `cpp20-coroutine.cpp` is a synchronous pull generator, not asynchronous I/O. The coroutine frame owns its suspended parameters; `IntGenerator` uniquely owns and destroys the coroutine handle. It is not a general scheduler or networking task.
 - **Barrier:** the C++20 barrier lab coordinates a fixed participant count across phases. `jthread` joining remains explicit before the result read.
-- **Modules:** a small interface/consumer pair lives in `modules/`; use the command matched to the installed MSVC toolset and understand IFC dependency ordering. Traditional headers remain a valid fallback and are used in the other labs.
+- **Modules:** the interface and consumer sources live beside this index; the build guide is in `modules/`. Use commands matched to the installed MSVC toolset and understand IFC dependency ordering. Traditional headers remain a valid fallback and are used in the other labs.
 - **Coroutine failures:** the additional `cpp20-coroutine-errors` lab stores `std::exception_ptr` in the promise and lets the consumer choose where to rethrow it; this is distinct from a generator that terminates on an unhandled exception.
 - **`mdspan`:** the feature-gated example shows a non-owning 2D view into a live array. A skipped lab means the selected standard library lacks the advertised macro, not that the C++23 language mode failed.
 

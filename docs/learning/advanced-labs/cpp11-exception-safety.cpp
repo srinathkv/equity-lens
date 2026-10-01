@@ -1,17 +1,21 @@
 #include "../exercises/LabChecks.h"
 
 #include <stdexcept>
+#include <type_traits>
 #include <vector>
 
 namespace {
 class TrackedResource {
 public:
 	explicit TrackedResource(int& destructions) : destructions_(destructions) {}
-	~TrackedResource() { ++destructions_; }
+	~TrackedResource() noexcept { ++destructions_; }
 
 private:
 	int& destructions_;
 };
+
+static_assert(std::is_nothrow_destructible<TrackedResource>::value,
+	"cleanup must not throw during stack unwinding");
 }
 
 /** @brief Replaces prices only if all candidate values are positive. */
