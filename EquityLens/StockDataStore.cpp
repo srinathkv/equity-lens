@@ -14,11 +14,13 @@ namespace
 {
 	using Statement = std::unique_ptr<sqlite3_stmt, decltype(&sqlite3_finalize)>;
 
+	/** @brief Throws a runtime error containing the current SQLite diagnostic. */
 	[[noreturn]] void throwDatabaseError(sqlite3* database, std::string_view operation)
 	{
 		throw std::runtime_error(std::string(operation) + ": " + sqlite3_errmsg(database));
 	}
 
+	/** @brief Prepares a statement and transfers finalization to RAII ownership. */
 	Statement prepare(sqlite3* database, const char* sql)
 	{
 		sqlite3_stmt* statement = nullptr;
@@ -31,6 +33,7 @@ namespace
 		return Statement(statement, sqlite3_finalize);
 	}
 
+	/** @brief Binds text with SQLite-owned storage so the caller's view may expire. */
 	void bindText(sqlite3* database, sqlite3_stmt* statement, int index, std::string_view value)
 	{
 		if (value.size() > static_cast<std::size_t>(std::numeric_limits<int>::max()))
@@ -43,6 +46,7 @@ namespace
 		}
 	}
 
+	/** @brief Enforces persisted OHLCV and timestamp invariants before writing. */
 	void validatePrice(const StockPrice& price)
 	{
 		if (price.symbol.empty())
@@ -67,6 +71,7 @@ namespace
 		}
 	}
 
+	/** @brief Converts the current SQLite row into a domain record. */
 	StockPrice readPrice(sqlite3_stmt* statement)
 	{
 		const auto* symbol = reinterpret_cast<const char*>(sqlite3_column_text(statement, 0));
@@ -87,6 +92,7 @@ namespace
 	}
 }
 
+/** @copydoc StockDataStore::StockDataStore(std::string_view) */
 StockDataStore::StockDataStore(std::string_view databasePath)
 {
 	if (databasePath.empty())
@@ -133,11 +139,13 @@ StockDataStore::StockDataStore(std::string_view databasePath)
 	}
 }
 
+/** @copydoc StockDataStore::~StockDataStore() */
 StockDataStore::~StockDataStore()
 {
 	sqlite3_close_v2(database_);
 }
 
+/** @copydoc StockDataStore::upsertPrice(const StockPrice&) */
 void StockDataStore::upsertPrice(const StockPrice& price)
 {
 	validatePrice(price);
@@ -165,6 +173,7 @@ void StockDataStore::upsertPrice(const StockPrice& price)
 	}
 }
 
+/** @copydoc StockDataStore::getPrices(std::string_view, std::chrono::sys_time<std::chrono::milliseconds>, std::chrono::sys_time<std::chrono::milliseconds>) const */
 std::vector<StockPrice> StockDataStore::getPrices(
 	std::string_view symbol,
 	std::chrono::sys_time<std::chrono::milliseconds> fromInclusive,
@@ -202,6 +211,7 @@ std::vector<StockPrice> StockDataStore::getPrices(
 	return prices;
 }
 
+/** @copydoc StockDataStore::latestPrice(std::string_view) const */
 std::optional<StockPrice> StockDataStore::latestPrice(std::string_view symbol) const
 {
 	if (symbol.empty())

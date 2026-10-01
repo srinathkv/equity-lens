@@ -6,6 +6,7 @@
 
 namespace
 {
+	/** @brief Validates that indicator input is one valid, chronological series. */
 	void validateSeries(const std::vector<StockPrice>& prices)
 	{
 		if (prices.empty())
@@ -41,6 +42,7 @@ namespace
 		}
 	}
 
+	/** @brief Rejects an empty rolling-window size. */
 	void validatePeriod(std::size_t period)
 	{
 		if (period == 0)
@@ -49,6 +51,7 @@ namespace
 		}
 	}
 
+	/** @brief Converts Wilder average gain/loss values into the conventional RSI range. */
 	double calculateRsiValue(long double averageGain, long double averageLoss)
 	{
 		if (averageGain == 0 && averageLoss == 0)
@@ -69,6 +72,7 @@ namespace
 	}
 }
 
+/** @copydoc calculateSimpleMovingAverage(const std::vector<StockPrice>&, std::size_t) */
 std::vector<std::optional<double>> calculateSimpleMovingAverage(
 	const std::vector<StockPrice>& prices, std::size_t period)
 {
@@ -92,6 +96,7 @@ std::vector<std::optional<double>> calculateSimpleMovingAverage(
 	return result;
 }
 
+/** @copydoc calculateRelativeStrengthIndex(const std::vector<StockPrice>&, std::size_t) */
 std::vector<std::optional<double>> calculateRelativeStrengthIndex(
 	const std::vector<StockPrice>& prices, std::size_t period)
 {
@@ -129,6 +134,7 @@ std::vector<std::optional<double>> calculateRelativeStrengthIndex(
 	return result;
 }
 
+/** @copydoc calculateBollingerBands(const std::vector<StockPrice>&, std::size_t, double) */
 std::vector<std::optional<BollingerBands>> calculateBollingerBands(
 	const std::vector<StockPrice>& prices, std::size_t period, double standardDeviations)
 {

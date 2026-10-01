@@ -25,6 +25,7 @@ namespace
 	using Json = nlohmann::json;
 	using WinHttpHandle = std::unique_ptr<void, decltype(&WinHttpCloseHandle)>;
 
+	/** @brief Marks temporary HTTP statuses that may succeed on a later attempt. */
 	class RetryableHttpStatus final : public std::runtime_error
 	{
 	public:
@@ -33,6 +34,7 @@ namespace
 
 	constexpr unsigned maximumRequestAttempts = 3;
 
+	/** @brief Classifies WinHTTP transport codes eligible for a bounded retry. */
 	bool isRetryableWinHttpError(int errorCode)
 	{
 		switch (errorCode)
@@ -48,11 +50,13 @@ namespace
 		}
 	}
 
+	/** @brief Computes the exponential delay after a failed request attempt. */
 	std::chrono::milliseconds retryDelay(unsigned failedAttempt)
 	{
 		return std::chrono::milliseconds{ 500 } * (1u << (failedAttempt - 1));
 	}
 
+	/** @brief Checks the provider's supported ASCII ticker character set. */
 	constexpr bool isAsciiAlphaNumeric(unsigned char character)
 	{
 		return (character >= 'A' && character <= 'Z') ||
@@ -60,11 +64,13 @@ namespace
 			(character >= '0' && character <= '9');
 	}
 
+	/** @brief Throws the last WinHTTP error using the system error category. */
 	[[noreturn]] void throwWinHttpError(const char* operation)
 	{
 		throw std::system_error(static_cast<int>(GetLastError()), std::system_category(), operation);
 	}
 
+	/** @brief Serializes requests and observes the provider request interval. */
 	void sendRateLimitedRequest(HINTERNET request)
 	{
 		static std::mutex requestMutex;
@@ -86,6 +92,7 @@ namespace
 		}
 	}
 
+	/** @brief Validates and uppercases a symbol before query construction. */
 	std::string normalizeSymbol(std::string_view symbol)
 	{
 		if (symbol.empty())
@@ -114,6 +121,7 @@ namespace
 		return normalized;
 	}
 
+	/** @brief Percent-encodes bytes that are not unreserved URI characters. */
 	std::string urlEncode(std::string_view value)
 	{
 		constexpr char hex[] = "0123456789ABCDEF";
@@ -134,11 +142,13 @@ namespace
 		return encoded;
 	}
 
+	/** @brief Widens the ASCII-only request path for WinHTTP. */
 	std::wstring widenAscii(std::string_view value)
 	{
 		return std::wstring(value.begin(), value.end());
 	}
 
+	/** @brief Retrieves a provider field accepting either its string or number JSON representation. */
 	std::string getQuoteField(const Json& quote, const char* field)
 	{
 		const auto& value = quote.at(field);
@@ -153,6 +163,7 @@ namespace
 		throw std::runtime_error(std::string("Unexpected Alpha Vantage field: ") + field);
 	}
 
+	/** @brief Parses a complete finite floating-point provider field. */
 	double parseDouble(const Json& quote, const char* field)
 	{
 		const std::string text = getQuoteField(quote, field);
@@ -168,12 +179,14 @@ namespace
 
 	std::chrono::sys_time<std::chrono::milliseconds> parseTradingDate(std::string_view day);
 
+	/** @brief Extracts the latest trading date from a global quote. */
 	std::chrono::sys_time<std::chrono::milliseconds> parseTradingDay(const Json& quote)
 	{
 		const std::string day = getQuoteField(quote, "07. latest trading day");
 		return parseTradingDate(day);
 	}
 
+	/** @brief Parses and validates an ISO YYYY-MM-DD date into UTC midnight. */
 	std::chrono::sys_time<std::chrono::milliseconds> parseTradingDate(std::string_view day)
 	{
 		if (day.size() != 10 || day[4] != '-' || day[7] != '-')
@@ -202,6 +215,7 @@ namespace
 		return std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::sys_days{ tradingDate });
 	}
 
+	/** @brief Reads a bounded response body from a WinHTTP request. */
 	std::string readResponse(HINTERNET request)
 	{
 		constexpr std::size_t maximumResponseSize = 1024 * 1024;
@@ -237,6 +251,7 @@ namespace
 		}
 	}
 
+	/** @brief Performs one HTTPS request and validates HTTP and provider-level errors. */
 	Json fetchApiResponseOnce(std::string_view apiKey, std::string_view query)
 	{
 		const std::string path = "/query?" + std::string(query) + "&apikey=" + urlEncode(apiKey);
@@ -302,6 +317,7 @@ namespace
 		return response;
 	}
 
+	/** @brief Retries transient transport/server failures up to the configured limit. */
 	Json fetchApiResponse(std::string_view apiKey, std::string_view query)
 	{
 		for (unsigned attempt = 1; attempt <= maximumRequestAttempts; ++attempt)
@@ -337,6 +353,7 @@ namespace
 	}
 }
 
+/** @copydoc AlphaVantageClient::AlphaVantageClient(std::string) */
 AlphaVantageClient::AlphaVantageClient(std::string apiKey)
 	: apiKey_(std::move(apiKey))
 {
@@ -348,6 +365,7 @@ AlphaVantageClient::AlphaVantageClient(std::string apiKey)
 	}
 }
 
+/** @copydoc AlphaVantageClient::fetchGlobalQuote(std::string_view) const */
 StockPrice AlphaVantageClient::fetchGlobalQuote(std::string_view symbol) const
 {
 	const std::string normalizedSymbol = normalizeSymbol(symbol);
@@ -371,6 +389,7 @@ StockPrice AlphaVantageClient::fetchGlobalQuote(std::string_view symbol) const
 	};
 }
 
+/** @copydoc AlphaVantageClient::fetchDailyHistory(std::string_view) const */
 std::vector<StockPrice> AlphaVantageClient::fetchDailyHistory(std::string_view symbol) const
 {
 	const std::string normalizedSymbol = normalizeSymbol(symbol);

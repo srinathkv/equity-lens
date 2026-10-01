@@ -23,6 +23,7 @@
 
 namespace
 {
+	/** @brief Creates a provider client from ALPHAVANTAGE_API_KEY without exposing the key. */
 	AlphaVantageClient createClient()
 	{
 		char* apiKeyValue = nullptr;
@@ -36,6 +37,7 @@ namespace
 		return AlphaVantageClient{ apiKey == nullptr ? "" : apiKey.get() };
 	}
 
+	/** @brief Uppercases an ASCII ticker for storage lookups. */
 	std::string uppercaseSymbol(std::string_view symbol)
 	{
 		std::string normalized{ symbol };
@@ -49,6 +51,7 @@ namespace
 		return normalized;
 	}
 
+	/** @brief Formats a system timestamp as an ISO calendar date. */
 	std::string formatDate(std::chrono::sys_time<std::chrono::milliseconds> timestamp)
 	{
 		const std::chrono::year_month_day date{ std::chrono::floor<std::chrono::days>(timestamp) };
@@ -59,6 +62,7 @@ namespace
 		return output.str();
 	}
 
+	/** @brief Prints saved observations as a tabular OHLCV history. */
 	void printHistory(const std::vector<StockPrice>& prices)
 	{
 		if (prices.empty())
@@ -80,6 +84,7 @@ namespace
 		}
 	}
 
+	/** @brief Calculates and prints summary statistics for saved observations. */
 	void printSummaryStatistics(const std::vector<StockPrice>& prices)
 	{
 		const StockSummaryStatistics statistics = calculateSummaryStatistics(prices);
@@ -95,6 +100,7 @@ namespace
 			<< "Average volume: " << statistics.averageVolume << '\n';
 	}
 
+	/** @brief Prints a numeric indicator cell or a placeholder during warm-up. */
 	void printIndicatorCell(std::optional<double> value)
 	{
 		if (value)
@@ -107,6 +113,7 @@ namespace
 		}
 	}
 
+	/** @brief Calculates and displays SMA, RSI, and Bollinger values for recent rows. */
 	void printTechnicalIndicators(const std::vector<StockPrice>& prices)
 	{
 		if (prices.empty())
@@ -145,6 +152,7 @@ namespace
 		}
 	}
 
+	/** @brief Loads all persisted observations for a case-normalized symbol. */
 	std::vector<StockPrice> getAllSavedPrices(const StockDataStore& store, std::string_view symbol)
 	{
 		return store.getPrices(uppercaseSymbol(symbol),
@@ -152,6 +160,7 @@ namespace
 			std::chrono::sys_time<std::chrono::milliseconds>::max());
 	}
 
+	/** @brief Prints the supported commands and their argument forms. */
 	void printUsage()
 	{
 		std::cout << "Usage:\n"
@@ -166,6 +175,13 @@ namespace
 	}
 }
 
+/**
+ * @brief Parses CLI commands and coordinates provider, persistence, and presentation services.
+ * @details The `learn` command exits before client creation and operates entirely offline.
+ * @param argc Number of command-line arguments.
+ * @param argv Argument vector supplied by the runtime.
+ * @return Zero on success, nonzero when command execution or one or more lookups fail.
+ */
 int main(int argc, char* argv[])
 {
 	try

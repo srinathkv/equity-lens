@@ -11,8 +11,9 @@
 
 int runLearningDemo()
 {
-	std::cout << "EquityLens modern C++ field guide (offline; production data is unchanged)\n"
-		<< "Each chapter demonstrates practical features and notes support limits.\n\n";
+	std::cout << "EQUITYLENS | MODERN C++ FIELD GUIDE\n"
+		<< "Offline examples using sample data; production data and storage are unchanged.\n"
+		<< "Prices use two decimal places. Feature-dependent examples report when unavailable.\n";
 
 	EquityLensLearning::demonstrateCpp11(std::cout);
 	EquityLensLearning::demonstrateCpp14(std::cout);
@@ -20,5 +21,6 @@ int runLearningDemo()
 	EquityLensLearning::demonstrateCpp20(std::cout);
 	EquityLensLearning::demonstrateCpp23(std::cout);
 	EquityLensLearning::demonstrateCpp26(std::cout);
+	std::cout << "\nGuide complete. See docs/learning for detailed explanations and support notes.\n";
 	return 0;
 }

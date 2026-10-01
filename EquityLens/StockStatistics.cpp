@@ -4,6 +4,7 @@
 #include <cmath>
 #include <stdexcept>
 
+/** @copydoc calculateSummaryStatistics(const std::vector<StockPrice>&) */
 StockSummaryStatistics calculateSummaryStatistics(const std::vector<StockPrice>& prices)
 {
 	if (prices.empty())

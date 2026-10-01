@@ -19,8 +19,10 @@
 
 namespace
 {
+	/** @brief Counts test cases that fail within this executable. */
 	int failures = 0;
 
+	/** @brief Fails the current test by throwing when a condition is false. */
 	void require(bool condition, const std::string& message)
 	{
 		if (!condition)
@@ -29,6 +31,7 @@ namespace
 		}
 	}
 
+	/** @brief Asserts that two floating-point values differ by no more than 1e-9. */
 	void requireNear(double actual, double expected, const std::string& message)
 	{
 		if (std::abs(actual - expected) > 1e-9)
@@ -37,6 +40,7 @@ namespace
 		}
 	}
 
+	/** @brief Asserts that an action throws the requested exception type. */
 	template<typename Exception, typename Action>
 	void requireThrows(Action&& action, const std::string& message)
 	{
@@ -51,6 +55,7 @@ namespace
 		throw std::runtime_error(message);
 	}
 
+	/** @brief Runs one test function and records/report failures without stopping the suite. */
 	void runTest(const char* name, void (*test)())
 	{
 		try
@@ -65,6 +70,7 @@ namespace
 		}
 	}
 
+	/** @brief Creates a UTC-midnight timestamp in the deterministic January 2024 fixture. */
 	std::chrono::sys_time<std::chrono::milliseconds> date(unsigned day)
 	{
 		const std::chrono::year_month_day calendarDate{
@@ -73,12 +79,14 @@ namespace
 		return std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::sys_days{ calendarDate });
 	}
 
+	/** @brief Constructs a fixture observation for a given January day. */
 	StockPrice makePrice(std::string symbol, unsigned day, double open, double high, double low,
 		double close, std::int64_t volume)
 	{
 		return StockPrice{ std::move(symbol), date(day), open, high, low, close, volume };
 	}
 
+	/** @brief Owns a unique temporary SQLite path and removes database artifacts on destruction. */
 	class TemporaryDatabase
 	{
 	public:
@@ -106,6 +114,7 @@ namespace
 		std::filesystem::path path_;
 	};
 
+	/** @brief Verifies chronological endpoint selection and summary aggregations. */
 	void statisticsUseChronologicalEndpointsAndAggregateValues()
 	{
 		const std::vector<StockPrice> prices{
@@ -128,6 +137,7 @@ namespace
 		requireNear(result.averageVolume, 2000, "average volume should be calculated across all observations");
 	}
 
+	/** @brief Verifies zero net/percentage change for a single observation. */
 	void statisticsHandleSingleObservation()
 	{
 		const std::vector<StockPrice> prices{ makePrice("MSFT", 1, 100, 110, 90, 105, 500) };
@@ -137,6 +147,7 @@ namespace
 		requireNear(result.averageClose, 105, "single-observation average close should equal its close");
 	}
 
+	/** @brief Verifies empty, mixed-symbol, and invalid-OHLC inputs are rejected. */
 	void statisticsRejectInvalidInputs()
 	{
 		requireThrows<std::invalid_argument>([] { static_cast<void>(calculateSummaryStatistics({})); },
@@ -154,6 +165,7 @@ namespace
 			}, "invalid OHLC values should be rejected");
 	}
 
+	/** @brief Verifies SMA alignment, warm-up absence, sliding windows, and period validation. */
 	void indicatorsCalculateMovingAveragesAndRequireValidPeriods()
 	{
 		const std::vector<StockPrice> prices{
@@ -171,6 +183,7 @@ namespace
 			"zero moving-average period should be rejected");
 	}
 
+	/** @brief Verifies Wilder RSI initialization, smoothing, and flat-series behavior. */
 	void indicatorsCalculateWilderRelativeStrengthIndex()
 	{
 		std::vector<StockPrice> prices;
@@ -194,6 +207,7 @@ namespace
 			"a flat price series should produce a neutral RSI");
 	}
 
+	/** @brief Verifies population-deviation Bollinger bands and argument validation. */
 	void indicatorsCalculatePopulationBollingerBands()
 	{
 		const std::vector<StockPrice> prices{
@@ -212,6 +226,7 @@ namespace
 			"negative Bollinger deviation multiplier should be rejected");
 	}
 
+	/** @brief Verifies ASCII candle symbols, date range, and chart-height validation. */
 	void presentationRendersAsciiCandlesticks()
 	{
 		const std::vector<StockPrice> prices{
@@ -231,6 +246,7 @@ namespace
 			"chart height below two rows should be rejected");
 	}
 
+	/** @brief Verifies CSV quoting and escaping for stream and file exports. */
 	void presentationExportsEscapedCsv()
 	{
 		const std::vector<StockPrice> prices{
@@ -254,6 +270,7 @@ namespace
 		require(static_cast<bool>(input), "CSV output file should open successfully");
 	}
 
+	/** @brief Verifies SQLite persistence, inclusive range queries, upserts, and reopen behavior. */
 	void sqliteStorePersistsQueriesAndUpsertsPrices()
 	{
 		TemporaryDatabase database;
@@ -288,6 +305,7 @@ namespace
 		require(reopened.latestPrice("AAPL").has_value(), "saved prices should remain after reopening the database");
 	}
 
+	/** @brief Verifies rejection of invalid OHLC values and reversed query ranges. */
 	void sqliteStoreRejectsInvalidPricesAndRanges()
 	{
 		TemporaryDatabase database;
@@ -298,6 +316,7 @@ namespace
 			"reversed date ranges should be rejected");
 	}
 
+	/** @brief Guards the distinct Alpha Vantage volume field names used by each endpoint. */
 	void alphaVantageVolumeParsingMatchesEndpointSchemas()
 	{
 		const nlohmann::json globalQuote = {
@@ -318,6 +337,7 @@ namespace
 	}
 }
 
+/** @brief Runs the focused EquityLens regression suite and returns a failure status. */
 int main()
 {
 	runTest("statistics aggregate chronologically", statisticsUseChronologicalEndpointsAndAggregateValues);

@@ -12,6 +12,7 @@
 
 namespace
 {
+	/** @brief Validates single-symbol chronological input before rendering/export. */
 	void validatePresentationSeries(const std::vector<StockPrice>& prices)
 	{
 		if (prices.empty())
@@ -45,6 +46,7 @@ namespace
 		}
 	}
 
+	/** @brief Formats a system timestamp as an ISO calendar date. */
 	std::string formatDate(std::chrono::sys_time<std::chrono::milliseconds> timestamp)
 	{
 		const std::chrono::year_month_day date{ std::chrono::floor<std::chrono::days>(timestamp) };
@@ -56,6 +58,7 @@ namespace
 		return output.str();
 	}
 
+	/** @brief Maps a price into a chart row, handling a flat range. */
 	std::size_t priceRow(double price, double highest, double lowest, std::size_t height)
 	{
 		if (highest == lowest)
@@ -66,6 +69,7 @@ namespace
 		return static_cast<std::size_t>(std::lround(scaled));
 	}
 
+	/** @brief Writes a CSV field with quotes and escapes embedded quotes by doubling. */
 	void writeCsvField(std::ostream& output, std::string_view field)
 	{
 		output.put('"');
@@ -80,6 +84,7 @@ namespace
 		output.put('"');
 	}
 
+	/** @brief Emits the shared header and data rows used by both CSV APIs. */
 	void writeCsvRows(const std::vector<StockPrice>& prices, std::ostream& output)
 	{
 		output.imbue(std::locale::classic());
@@ -97,6 +102,7 @@ namespace
 	}
 }
 
+/** @copydoc renderCandlestickChart(const std::vector<StockPrice>&, std::size_t) */
 std::string renderCandlestickChart(const std::vector<StockPrice>& prices, std::size_t height)
 {
 	validatePresentationSeries(prices);
@@ -149,12 +155,14 @@ std::string renderCandlestickChart(const std::vector<StockPrice>& prices, std::s
 	return output.str();
 }
 
+/** @copydoc writePriceHistoryCsv(const std::vector<StockPrice>&, std::ostream&) */
 void writePriceHistoryCsv(const std::vector<StockPrice>& prices, std::ostream& output)
 {
 	validatePresentationSeries(prices);
 	writeCsvRows(prices, output);
 }
 
+/** @copydoc exportPriceHistoryCsv(const std::vector<StockPrice>&, const std::filesystem::path&) */
 void exportPriceHistoryCsv(const std::vector<StockPrice>& prices, const std::filesystem::path& filePath)
 {
 	validatePresentationSeries(prices);
