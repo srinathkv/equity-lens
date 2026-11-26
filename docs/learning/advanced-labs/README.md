@@ -19,12 +19,16 @@ These labs fill selected high-value gaps after the chapter exercises. They are i
 | K | C++20 coroutine lab | C++20 | Coroutine exception capture and error rethrow | Compiler coroutine support |
 | L | C++26 chapter | C++latest | `views::enumerate` and its feature-test gate | Feature-gated by `__cpp_lib_ranges_enumerate` |
 | M | C++20 chapter | C++20 | Cooperative `jthread` cancellation and stop callbacks | Core standard library |
+| N | C++11–C++26 chapters | C++latest | Comprehensive templates, algorithms, standard-library, ownership, parsing, ranges, and support-gated integration capstone | Feature-disabled fallbacks can be forced and tested |
 
 ## Run focused labs
 
 From the repository root in Developer PowerShell for Visual Studio:
 
 ```powershell
+.\docs\learning\advanced-labs\run-advanced-lab.ps1 -Lab cpp11-26-comprehensive -Standard c++latest -WarningsAsErrors
+.\docs\learning\advanced-labs\run-advanced-lab.ps1 -Lab cpp11-26-comprehensive-starter -Standard c++latest -WarningsAsErrors
+.\docs\learning\advanced-labs\run-advanced-lab.ps1 -Lab cpp11-26-comprehensive -Standard c++latest -WarningsAsErrors -ForceNoExpected -ForceNoInplaceVector
 .\docs\learning\advanced-labs\run-advanced-lab.ps1 -Lab cpp11-publication -Standard c++14
 .\docs\learning\advanced-labs\run-advanced-lab.ps1 -Lab cpp11-exception-safety -Standard c++14
 .\docs\learning\advanced-labs\run-advanced-lab.ps1 -Lab cpp11-templates -Standard c++14
@@ -41,7 +45,7 @@ From the repository root in Developer PowerShell for Visual Studio:
 
 Each command builds and runs a reference. Append `-starter` to the lab name to compile the learner version (for example, `-Lab cpp11-templates-starter`). Starters are expected to fail behavior checks while still compiling. Module setup is intentionally separate; follow its own guide and do not assume that `/std:c++20` alone configures module build dependencies.
 
-Worked explanations live beside each pair: `cpp11-templates.md`, `cpp11-polymorphism.md`, `cpp11-containers.md`, `cpp11-publication.md`, `cpp11-exception-safety.md`, `cpp17-filesystem.md`, `cpp20-cancellation.md`, `cpp20-coroutine.md`, `cpp20-coroutine-errors.md`, `cpp20-barrier.md`, `cpp23-mdspan.md`, and `cpp26-ranges.md`. Also complete the evidence-based [C++26 feature-status study](cpp26-status.md). For compiler-dependent modules, use the dedicated [MSVC module guide](modules/README.md).
+Worked explanations live beside each pair: `cpp11-26-comprehensive.md`, `cpp11-templates.md`, `cpp11-polymorphism.md`, `cpp11-containers.md`, `cpp11-publication.md`, `cpp11-exception-safety.md`, `cpp17-filesystem.md`, `cpp20-cancellation.md`, `cpp20-coroutine.md`, `cpp20-coroutine-errors.md`, `cpp20-barrier.md`, `cpp23-mdspan.md`, and `cpp26-ranges.md`. Also complete the evidence-based [C++26 feature-status study](cpp26-status.md). For compiler-dependent modules, use the dedicated [MSVC module guide](modules/README.md).
 
 ## Worked concepts
 
