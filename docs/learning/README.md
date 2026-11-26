@@ -15,7 +15,7 @@ This curriculum is an example-driven tour of selected major C++ language and sta
 9. [Advanced modern C++ labs](advanced-labs/README.md) — focused, tested exercises for exception safety, template selection, coroutines, modules, synchronization, and support-sensitive features.
 10. [Modern C++ interview questions](interview-questions.md) — 200 questions and answers on ownership, templates, errors, library design, concurrency, and modern facilities.
 11. [Feature catalog](feature-catalog.md) — coverage ledger from major topic areas to demos, lessons/labs, and support/design notes.
-12. [Advanced examples: concepts and tradeoffs](advanced-examples.md) — detailed walkthrough of ownership, concurrency, constraints, views, errors, and support-sensitive features in `learn`; also see [Design patterns in modern C++](design-patterns.md) for all 23 GoF patterns, modern idioms, and exercises.
+12. [Advanced examples: concepts and tradeoffs](advanced-examples.md) — detailed walkthrough of ownership, concurrency, constraints, views, errors, and support-sensitive features in `learn`.
 
 ### Beginner entry path
 
