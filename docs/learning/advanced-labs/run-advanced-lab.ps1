@@ -1,6 +1,6 @@
 param(
 	[Parameter(Mandatory = $true)]
-	[ValidateSet('cpp11-templates', 'cpp11-templates-starter', 'cpp11-polymorphism', 'cpp11-polymorphism-starter', 'cpp11-containers', 'cpp11-containers-starter', 'cpp11-publication', 'cpp11-publication-starter', 'cpp11-exception-safety', 'cpp11-exception-safety-starter', 'cpp17-filesystem', 'cpp17-filesystem-starter', 'cpp20-barrier', 'cpp20-barrier-starter', 'cpp20-coroutine', 'cpp20-coroutine-starter', 'cpp20-coroutine-errors', 'cpp20-coroutine-errors-starter', 'cpp23-mdspan', 'cpp23-mdspan-starter', 'cpp26-ranges', 'cpp26-ranges-starter')]
+	[ValidateSet('cpp11-templates', 'cpp11-templates-starter', 'cpp11-polymorphism', 'cpp11-polymorphism-starter', 'cpp11-containers', 'cpp11-containers-starter', 'cpp11-publication', 'cpp11-publication-starter', 'cpp11-exception-safety', 'cpp11-exception-safety-starter', 'cpp17-filesystem', 'cpp17-filesystem-starter', 'cpp20-barrier', 'cpp20-barrier-starter', 'cpp20-cancellation', 'cpp20-cancellation-starter', 'cpp20-coroutine', 'cpp20-coroutine-starter', 'cpp20-coroutine-errors', 'cpp20-coroutine-errors-starter', 'cpp23-mdspan', 'cpp23-mdspan-starter', 'cpp26-ranges', 'cpp26-ranges-starter')]
 	[string]$Lab,
 	[Parameter(Mandatory = $true)]
 	[ValidateSet('c++14', 'c++17', 'c++20', 'c++latest')]

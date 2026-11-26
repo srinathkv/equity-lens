@@ -60,12 +60,16 @@ namespace EquityLensLearning
 	inline bool runCpp20Practice(std::istream& input, std::ostream& output)
 	{
 		constexpr std::array<int, 5> values{ 1, 2, 3, 4, 5 };
-		const auto squaredEvenValues = values | std::views::filter([](int value) {
+		auto squaredEvenValues = values | std::views::filter([](int value) {
 			return value % 2 == 0;
 		}) | std::views::transform([](int value) {
 			return value * value;
 		});
-		const int expected = std::accumulate(squaredEvenValues.begin(), squaredEvenValues.end(), 0);
+		int expected = 0;
+		for (const int squaredValue : squaredEvenValues)
+		{
+			expected += squaredValue;
+		}
 
 		output << "\nPractice: From {1, 2, 3, 4, 5}, keep even values, square them, then sum them.\n"
 			<< "Enter the integer total (up to three attempts): ";

@@ -36,7 +36,7 @@ namespace AlphaVantageParsing
 		else if (value.is_number_unsigned())
 		{
 			const auto unsignedVolume = value.get<std::uint64_t>();
-			if (unsignedVolume > static_cast<std::uint64_t>(std::numeric_limits<std::int64_t>::max()))
+			if (unsignedVolume > static_cast<std::uint64_t>((std::numeric_limits<std::int64_t>::max)()))
 			{
 				throw std::runtime_error("Invalid Alpha Vantage volume field");
 			}
@@ -50,7 +50,7 @@ namespace AlphaVantageParsing
 		{
 			const double numericVolume = value.get<double>();
 			if (!std::isfinite(numericVolume) || numericVolume < 0 || std::trunc(numericVolume) != numericVolume ||
-				numericVolume >= static_cast<double>(std::numeric_limits<std::int64_t>::max()))
+				numericVolume >= static_cast<double>((std::numeric_limits<std::int64_t>::max)()))
 			{
 				throw std::runtime_error("Invalid Alpha Vantage volume field");
 			}
